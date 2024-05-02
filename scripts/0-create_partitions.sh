@@ -31,23 +31,23 @@ create_partition() {
 }
 
 # Function to initialize a swap partition
-initialize_swap() {
-    echo "Initializing swap partition..."
-    # Assuming the user has already created a swap partition and knows its name
-    echo "Please enter the name of the swap partition (e.g., /dev/sda2):"
-    read swap_partition_name
+# initialize_swap() {
+#     echo "Initializing swap partition..."
+#     # Assuming the user has already created a swap partition and knows its name
+#     echo "Please enter the name of the swap partition (e.g., /dev/sda2):"
+#     read swap_partition_name
 
-    # Check if the swap partition exists
-    if [ ! -e "$swap_partition_name" ]; then
-        echo "The swap partition $swap_partition_name does not exist. Please check the partition name."
-        exit 1
-    fi
+#     # Check if the swap partition exists
+#     if [ ! -e "$swap_partition_name" ]; then
+#         echo "The swap partition $swap_partition_name does not exist. Please check the partition name."
+#         exit 1
+#     fi
 
-    # Initialize the swap partition
-    echo "Initializing $swap_partition_name as swap..."
-    mkswap "$swap_partition_name"
-    /sbin/swapon -v /dev/$swap_partition_name
-}
+#     # Initialize the swap partition
+#     echo "Initializing $swap_partition_name as swap..."
+#     mkswap "$swap_partition_name"
+#     /sbin/swapon -v /dev/$swap_partition_name
+# }
 
 # Main script
 echo "This script will guide you through creating and formatting partitions for LFS."
@@ -56,6 +56,6 @@ echo "This script will guide you through creating and formatting partitions for 
 create_partition
 
 # Initialize the swap partition
-initialize_swap
+# initialize_swap
 
 echo "Partitions have been created and formatted successfully."
