@@ -13,7 +13,9 @@ check_and_install() {
     if [ -n "$errors" ]; then
         echo "The following packages are missing or outdated:"
         echo "$errors"
-        echo "Attempting to install missing packages..."
+        sleep 3
+        # Add loading animation here
+        loading_icon 5 "Attempting to install missing packages..."
 
         # Extract package names from the errors
         packages=$(echo "$errors" | grep -oP 'ERROR: Cannot find \K\w+')
@@ -27,6 +29,26 @@ check_and_install() {
     else
         echo "All required packages are installed and up to date."
     fi
+}
+
+# Define the loading_icon function
+function loading_icon() {
+    local load_interval="${1}"
+    local loading_message="${2}"
+    local elapsed=0
+    local loading_animation=( '—' "\\" '|' '/' )
+
+    echo -n "${loading_message} "
+    tput civis
+    trap "tput cnorm" EXIT
+    while [ "${load_interval}" -ne "${elapsed}" ]; do
+        for frame in "${loading_animation[@]}" ; do
+            printf "%s\b" "${frame}"
+            sleep 0.25
+        done
+        elapsed=$(( elapsed + 1 ))
+    done
+    printf " \b\n"
 }
 
 # Execute the function
