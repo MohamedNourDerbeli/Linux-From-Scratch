@@ -7,8 +7,11 @@ if [ "$(id -u)" -ne 0 ]; then
    exit 1
 fi
 
-# Install Host System Requirements 
+# Install Host System Requirements
 echo "Running 2-check_and_install.sh..."
+
+export LFS="/mnt/lfs"
+
 
 sleep 2
 
@@ -49,7 +52,7 @@ echo "sets up the LFS user"
 
 sleep 2
 
-./5-setup_lfs_user.sh
+./5-add_lfs_user.sh
 
 # setup the LFS user's environment
 echo "Setting up lfs user's environment..."
