@@ -8,24 +8,13 @@ if [ "$(id -u)" -ne 0 ]; then
 fi
 
 # Install Host System Requirements
-echo "Running 2-check_and_install.sh..."
-
-export LFS="/mnt/lfs"
-
-
-sleep 2
-
 ./2-check_and_install.sh
-
-# create partitions and mount the LFS file system
-echo "Running 2-check_and_install.sh..."
-
-sleep 2
-
-./0-create_partitions.sh
 
 # Set the LFS variable
 export LFS="/mnt/lfs"
+
+# create partitions and mount the LFS file system
+./0-create_partitions.sh
 
 # Check if the LFS directory exists
 if [ ! -d "$LFS" ]; then
@@ -34,17 +23,9 @@ if [ ! -d "$LFS" ]; then
 fi
 
 # downlod and verify the LFS sources code
-echo "Running 3-download_and_verify.sh..."
-
-sleep 2
-
 ./3-download_and_verify.sh
 
 # Setup the LFS directories
-echo "Running 4-setup_lfs_directories.sh..."
-
-sleep 2
-
 ./4-setup_lfs_directories.sh
 
 # sets up the LFS user
@@ -56,10 +37,6 @@ sleep 2
 
 # setup the LFS user's environment
 echo "Setting up lfs user's environment..."
-
-sleep 2
-
 ./6-setup_lfs_profile.sh
-
 
 echo "All scripts have been executed successfully."
