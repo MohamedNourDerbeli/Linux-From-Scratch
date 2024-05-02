@@ -18,7 +18,7 @@ export LFS="/mnt/lfs"
 
 # Check if the LFS directory exists
 if [ ! -d "$LFS" ]; then
-    echo "The LFS directory does not exist. Please create it before running this script."
+    echo "The LFS directory does not exist."
     exit 1
 fi
 
