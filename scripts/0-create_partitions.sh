@@ -2,6 +2,8 @@
 
 # This script is used to create a partition and mount it on the LFS directory
 
+export LFS="/mnt/lfs"
+
 # Ensure the script is run as root
 if [ "$(id -u)" -ne 0 ]; then
    echo "This script must be run as root" 1>&2
@@ -48,9 +50,6 @@ create_partition() {
 #     mkswap "$swap_partition_name"
 #     /sbin/swapon -v /dev/$swap_partition_name
 # }
-
-# Main script
-echo "This script will guide you through creating and formatting partitions for LFS."
 
 # Create the root partition
 create_partition
