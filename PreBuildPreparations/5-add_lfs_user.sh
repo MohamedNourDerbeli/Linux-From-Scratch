@@ -1,6 +1,9 @@
 #!/bin/bash
 # This script sets up the LFS user and environment
 
+# sets up the LFS user
+echo "sets up the LFS user"
+
 # Ensure the script is run as root
 if [ "$(id -u)" -ne 0 ]; then
    echo "This script must be run as root" 1>&2
@@ -9,7 +12,7 @@ fi
 
 # Check if the LFS variable is set
 if [ -z "$LFS" ]; then
-    echo "The LFS variable is not set. Please set it to the root of your LFS directory."
+    echo "The LFS variable is not set."
     exit 1
 fi
 
@@ -31,4 +34,3 @@ chown -v lfs $LFS/{usr{,/*},lib,var,etc,bin,sbin,tools}
 case $(uname -m) in
  x86_64) chown -v lfs $LFS/lib64 ;;
 esac
-

@@ -9,7 +9,7 @@ fi
 
 # Check if the LFS variable is set
 if [ -z "$LFS" ]; then
-    echo "The LFS variable is not set. Please set it to the root of your LFS directory."
+    echo "The LFS variable is not set."
     exit 1
 fi
 
