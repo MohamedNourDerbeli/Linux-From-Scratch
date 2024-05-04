@@ -12,9 +12,11 @@ fi
 
 # Function to create a partition
 create_partition() {
-    echo "Creating partition..."
+    echo "Setup partition..."
     # Assuming the user has already created a partition and knows its name
-    echo "Please enter the name of the partition you want to format (e.g., /dev/sda1):"
+    echo "Partition list:"
+    lsblk
+    echo "Please enter the name of the partition (e.g., /dev/sda1):"
     read partition_name
 
     # Check if the partition exists
