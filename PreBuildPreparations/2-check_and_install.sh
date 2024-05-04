@@ -4,7 +4,7 @@
 # Define a function to check for missing packages
 check_and_install() {
     # Execute version-check.sh and capture its output
-    output=$(bash 1-version-check.sh)
+    output=$(bash PreBuildPreparations/1-version-check.sh)
 
     # Use grep to find lines starting with "ERROR:"
     errors=$(echo "$output" | grep -E '^ERROR:')
