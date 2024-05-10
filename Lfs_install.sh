@@ -1,6 +1,12 @@
 #!/bin/bash
 # This script will run all the scripts in the order they are listed.
 
+# Ensure the script is run as root
+if [ "$(id -u)" -ne 0 ]; then
+   echo "This script must be run as root" 1>&2
+   exit 1
+fi
+
 # Install Host System Requirements
 ./PreBuildPreparations/2-check_and_install.sh
 
@@ -31,8 +37,7 @@ fi
 ./PreBuildPreparations/6-setup_lfs_profile.sh
 
 #./Cross_Toolchain_Temp_Tools/1-binutils_setup.sh
+cp Cross_Toolchain_Temp_Tools/1-binutils_setup.sh $LFS/usr
+chmod +x  $LFS/usr/1-binutils_setup.sh
+su - lfs
 echo "All scripts have been executed successfully."
-cp Cross_Toolchain_Temp_Tools/1-binutils_setup.sh /home/lfs/
-chown -R lfs:lfs /home/lfs/*
-chmod +x /home/lfs/1-binutils_setup.sh
-sudo -E -u lfs /home/lfs/1-binutils_setup.sh
