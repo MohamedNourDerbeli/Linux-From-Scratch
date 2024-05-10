@@ -13,5 +13,10 @@ PATH=$LFS/tools/bin:$PATH
 CONFIG_SITE=$LFS/usr/share/config.site
 export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
 export MAKEFLAGS=-j$(nproc)
+if [ -f $LFS/usr/1-binutils_setup.sh ]; then
+    $LFS/usr/1-binutils_setup.sh && rm -f $LFS/usr/1-binutils_setup.sh
+fi
+
 EOF
+
 exit 1
