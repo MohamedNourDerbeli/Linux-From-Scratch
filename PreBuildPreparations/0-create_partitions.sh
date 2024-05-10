@@ -9,6 +9,18 @@ if [ "$(id -u)" -ne 0 ]; then
    echo "This script must be run as root" 1>&2
    exit 1
 fi
+# Function to create LFS directory
+create_lfs_directory() {
+    # Extract the path after /mnt/
+    lfs_path="${LFS#/mnt/}"
+
+    if [ -d "/mnt/$lfs_path" ]; then
+        echo "Removing existing /mnt/$lfs_path directory..."
+        rm -rf "/mnt/$lfs_path"
+    fi
+    echo "Creating /mnt/$lfs_path directory..."
+    mkdir -pv "/mnt/$lfs_path"
+}
 
 # Function to create a partition
 create_partition() {
@@ -25,12 +37,17 @@ create_partition() {
         exit 1
     fi
 
+    # Check if partition is mounted
+    if grep -qs "^$partition_name " /proc/mounts; then
+        umount "$partition_name"
+    fi
     # Format the partition with ext4
     echo "Formatting $partition_name with ext4..."
     mkfs -v -t ext4 "$partition_name"
     # Mount the partition
     echo "Mounting $partition_name..."
-    mkdir -pv $LFS
+    # Create LFS directory
+    create_lfs_directory
     mount -v -t ext4 $partition_name $LFS
 }
 
