@@ -37,7 +37,9 @@ fi
 ./PreBuildPreparations/6-setup_lfs_profile.sh
 
 #./Cross_Toolchain_Temp_Tools/1-binutils_setup.sh
-cp Cross_Toolchain_Temp_Tools/1-binutils_setup.sh $LFS/usr
+cp Cross_Toolchain_Temp_Tools/* $LFS/usr
 chmod +x  $LFS/usr/1-binutils_setup.sh
+chmod +x  $LFS/usr/2-GCC_setup.sh
+
 su - lfs
 echo "All scripts have been executed successfully."
