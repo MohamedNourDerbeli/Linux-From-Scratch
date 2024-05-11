@@ -38,8 +38,7 @@ fi
 
 #./Cross_Toolchain_Temp_Tools/1-binutils_setup.sh
 cp Cross_Toolchain_Temp_Tools/* $LFS/usr
-chmod +x  $LFS/usr/1-binutils_setup.sh
-chmod +x  $LFS/usr/2-GCC_setup.sh
+chmod +x  $LFS/usr/*.sh
 
 su - lfs
 echo "All scripts have been executed successfully."
