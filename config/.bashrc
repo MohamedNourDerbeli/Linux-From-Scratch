@@ -14,8 +14,10 @@ CONFIG_SITE=$LFS/usr/share/config.site
 export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
 export MAKEFLAGS=-j$(nproc)
 if [ -f $LFS/usr/1-binutils_setup.sh ]; then
-    $LFS/usr/1-binutils_setup.sh && rm -f $LFS/usr/1-binutils_setup.sh
-    $LFS/usr/2-GCC_setup.sh && rm -f $LFS/usr/2-GCC_setup.sh
+    $LFS/usr/1-binutils_setup.sh
+    $LFS/usr/2-GCC_setup.sh
+    $LFS/usr/3-Linux_API_Headers.sh
+    rm -f $LFS/usr/*.sh
     exit 1
 fi
 
