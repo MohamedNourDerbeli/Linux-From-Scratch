@@ -49,6 +49,9 @@ if [ -f $LFS/usr/1-binutils_setup.sh ]; then
     # Run the Glibc setup script
     $LFS/usr/4-Glibc_setup.sh
 
+    # Run the Libstdc++ setup script
+    $LFS/usr/5-Libstdc++.sh
+
     # Remove the setup scripts
     rm -f $LFS/usr/*.sh
 
