@@ -18,6 +18,8 @@ $LFS/usr/5-Libstdc++.sh
 # Run the M4 setup script
 $LFS/usr/6-M4.sh
 
+# Run the Ncurses setup script
+$LFS/usr/7-Ncurses.sh
+
 # Remove the setup scripts
 rm -f $LFS/usr/*.sh
-
