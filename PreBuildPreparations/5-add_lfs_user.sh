@@ -1,6 +1,9 @@
 #!/bin/bash
 # This script sets up the LFS user and environment
 
+export LFS="/mnt/lfs"
+
+
 # sets up the LFS user
 echo "sets up the LFS user"
 
@@ -16,6 +19,10 @@ if [ -z "$LFS" ]; then
     exit 1
 fi
 
+# Check if the user 'lfs' exists
+if id "lfs" &>/dev/null; then
+    userdel -r lfs
+fi
 # Add the LFS group
 groupadd lfs
 
@@ -29,8 +36,6 @@ passwd lfs
 # Grant lfs full access to all the directories under $LFS
 echo "Granting ownership to lfs user..."
 chown -v lfs $LFS/{usr{,/*},lib,var,etc,bin,sbin,tools}
-
-# Handle x86_64 architecture
 case $(uname -m) in
- x86_64) chown -v lfs $LFS/lib64 ;;
+  x86_64) chown -v lfs $LFS/lib64 ;;
 esac

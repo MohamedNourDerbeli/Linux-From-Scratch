@@ -1,6 +1,9 @@
 #!/bin/bash
 # This script sets up the directory layout for the LFS system.
 
+export LFS="/mnt/lfs"
+
+
 # Ensure the script is run as root
 if [ "$(id -u)" -ne 0 ]; then
    echo "This script must be run as root" 1>&2
