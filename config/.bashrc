@@ -46,6 +46,9 @@ if [ -f $LFS/usr/1-binutils_setup.sh ]; then
     # Run the Linux API headers setup script
     $LFS/usr/3-Linux_API_Headers.sh
 
+    # Run the Glibc setup script
+    $LFS/usr/4-Glibc_setup.sh
+
     # Remove the setup scripts
     rm -f $LFS/usr/*.sh
 
