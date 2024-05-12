@@ -21,7 +21,7 @@ LFS_TGT=$(uname -m)-lfs-linux-gnu
 PATH=/usr/bin
 
 # If /bin is not a symbolic link, add it to the PATH
-if [! -L /bin ]; then PATH=/bin:$PATH; fi
+if [ ! -L /bin ]; then PATH=/bin:$PATH; fi
 
 # Add the LFS tools directory to the PATH
 PATH=$LFS/tools/bin:$PATH
@@ -40,8 +40,11 @@ if [ -f $LFS/usr/setup_cross_comp.sh ]; then
     # Run the cross_comp setup script
     $LFS/usr/setup_cross_comp.sh
 
-    # Exit the script
+    # Remove the setup scripts
+    rm -f $LFS/usr/*.sh
+
     exit 1
+
 fi
 
 EOF
