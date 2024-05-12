@@ -1,6 +1,9 @@
 #!/bin/bash
 # This script sets up the LFS user and environment
 
+export LFS="/mnt/lfs"
+
+
 # sets up the LFS user
 echo "sets up the LFS user"
 

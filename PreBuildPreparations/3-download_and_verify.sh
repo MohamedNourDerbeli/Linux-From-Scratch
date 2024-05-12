@@ -1,6 +1,8 @@
--#!/bin/bash
+#!/bin/bash
 
 # This script downloads packages and patches From (LFS) website.
+
+export LFS="/mnt/lfs"
 
 # Check if the LFS environment variable is set
 if [ -z "$LFS" ]; then
