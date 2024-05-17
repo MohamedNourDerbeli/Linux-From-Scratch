@@ -1,5 +1,8 @@
 #!/bin/bash
 
+export LFS="/mnt/lfs"
+
+
 # Change ownership of the specified directories to root:root
 chown -R root:root $LFS/{usr,lib,var,etc,bin,sbin,tools}
 
