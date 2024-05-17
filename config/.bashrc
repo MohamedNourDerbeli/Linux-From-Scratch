@@ -48,5 +48,3 @@ if [ -f $LFS/usr/setup_cross_comp.sh ]; then
 fi
 
 EOF
-
-exit 1
