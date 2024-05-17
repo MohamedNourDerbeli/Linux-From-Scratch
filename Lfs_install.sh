@@ -12,7 +12,7 @@ LFS="/mnt/lfs"
 
 # Function to execute scripts
 run_script() {
-    if! bash "$1"; then
+    if ! bash "$1"; then
         echo "Failed to execute $1"
         exit 1
     fi
@@ -32,4 +32,13 @@ done
 cp Cross_Toolchain_Temp_Tools/* "$LFS/usr" && chmod +x "$LFS/usr"/*.sh
 
 # Switch to LFS user for further setup
-su - lfs 
+su - lfs
+
+chmod +x chroot-build/*.sh
+
+# Run each script in chroot-build directory
+for script in $(ls -v chroot-build/*.sh); do
+    if [[ "$(basename "$script")" =~ ^[0-3]+- ]]; then
+        run_script "$script"
+    fi
+done
