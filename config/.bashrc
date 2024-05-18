@@ -37,13 +37,13 @@ export MAKEFLAGS=-j$(nproc)
 
 # If the binutils setup script exists, run it
 if [ -f $LFS/usr/setup_cross_comp.sh ]; then
-    # Run the cross_comp setup script
+    Run the cross_comp setup script
     bash $LFS/usr/setup_cross_comp.sh
 
-    # Remove the setup scripts
+    Remove the setup scripts
     rm -rf $LFS/usr/*.sh
 
-    exit 1
+    # exit 1
 
 fi
 

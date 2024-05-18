@@ -8,7 +8,7 @@ echo "Extracting Python"
 tar -xvJf Python-3.12.2.tar.xz
 
 # Change to the extracted Python source code directory
-cd $LFS/sources/Python-3.12.2.tar.xz
+cd $LFS/sources/Python-3.12.2
 
 # Configure Python with the specified options
 # --prefix=/usr: Install Python in the /usr directory

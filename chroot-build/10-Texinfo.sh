@@ -8,7 +8,7 @@ echo "Extracting Texinfo"
 tar -xvJf texinfo-7.1.tar.xz
 
 # Change to the extracted Texinfo directory
-cd $LFS/sources/texinfo-7.1.tar.xz
+cd $LFS/sources/texinfo-7.1
 
 # Configure Texinfo with the prefix set to /usr
 ./configure --prefix=/usr

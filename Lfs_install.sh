@@ -34,12 +34,12 @@ sudo cp -r Cross_Toolchain_Temp_Tools/*.sh "$LFS/usr/"
 
 # Switch to LFS user for further setup
 su - lfs
-
+cp chroot-build/*.sh $LFS/usr
 chmod +x chroot-build/*.sh
 
 # Run each script in chroot-build directory
 for script in $(ls -v chroot-build/*.sh); do
-    if [[ "$(basename "$script")" =~ ^[0-12]+- ]]; then
+    if [[ "$(basename "$script")" =~ ^[0-3]+- ]]; then
         bash $script
     fi
 done

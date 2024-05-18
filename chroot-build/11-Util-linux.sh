@@ -8,7 +8,7 @@ echo "Extracting Util-linux"
 tar -xvJf util-linux-2.39.3.tar.xz
 
 # Change to the extracted Util-linux directory
-cd $LFS/sources/util-linux-2.39.3.tar.xz
+cd $LFS/sources/util-linux-2.39.3
 
 # Create the /var/lib/hwclock directory
 mkdir -pv /var/lib/hwclock
