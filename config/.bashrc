@@ -43,7 +43,7 @@ if [ -f $LFS/usr/setup_cross_comp.sh ]; then
     Remove the setup scripts
     rm -rf $LFS/usr/*.sh
 
-    # exit 1
+    exit 1
 
 fi
 
