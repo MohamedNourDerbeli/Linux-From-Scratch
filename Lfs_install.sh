@@ -28,8 +28,9 @@ done
 # Execute the setup_lfs_profile.sh script
 ./PreBuildPreparations/6-setup_lfs_profile.sh
 
-# Copy temporary tools to LFS
-cp Cross_Toolchain_Temp_Tools/* "$LFS/usr" && chmod +x "$LFS/usr"/*.sh
+# Copy the directory to $LFS/usr && Change permissions of .sh
+chmod +x Cross_Toolchain_Temp_Tools
+sudo cp -r Cross_Toolchain_Temp_Tools/*.sh "$LFS/usr/"
 
 # Switch to LFS user for further setup
 su - lfs
@@ -38,7 +39,16 @@ chmod +x chroot-build/*.sh
 
 # Run each script in chroot-build directory
 for script in $(ls -v chroot-build/*.sh); do
-    if [[ "$(basename "$script")" =~ ^[0-3]+- ]]; then
-        run_script "$script"
+    if [[ "$(basename "$script")" =~ ^[0-12]+- ]]; then
+        bash $script
     fi
 done
+
+# exit
+
+# mountpoint -q $LFS/dev/shm && umount $LFS/dev/shm
+# umount $LFS/dev/pts
+# umount $LFS/{sys,proc,run,dev}
+
+# cd $LFS
+# tar -cJpf $HOME/lfs-temp-tools-12.1.tar.xz .
