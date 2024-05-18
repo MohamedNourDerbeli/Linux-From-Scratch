@@ -5,7 +5,7 @@ cd $LFS/sources
 
 # Extract the make-4.4.1.tar.gz archive
 echo "Extracting Make"
-tar -xvJf make-4.4.1.tar.gz
+tar -xzvf make-4.4.1.tar.gz
 
 # Change directory to $LFS/sources/make-4.4.1
 cd $LFS/sources/make-4.4.1
