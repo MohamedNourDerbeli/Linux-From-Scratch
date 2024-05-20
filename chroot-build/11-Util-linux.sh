@@ -1,14 +1,14 @@
 #!/bin/bash
 
-# Change to the $LFS/sources directory
-cd $LFS/sources
+# Change to the /sources directory
+cd /sources
 
 # Extract Util-linux
 echo "Extracting Util-linux"
 tar -xvf util-linux-2.39.3.tar.xz
 
 # Change to the extracted Util-linux directory
-cd $LFS/sources/util-linux-2.39.3
+cd util-linux-2.39.3
 
 # Create the /var/lib/hwclock directory
 mkdir -pv /var/lib/hwclock
@@ -47,8 +47,8 @@ make
 # Install Util-linux
 make install
 
-# Change back to the $LFS/sources directory
-cd $LFS/sources
+# Change back to the /sources directory
+cd /sources
 
 # Remove the extracted Util-linux directory
 rm -rf util-linux-2.39.3

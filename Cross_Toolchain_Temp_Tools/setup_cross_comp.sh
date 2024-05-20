@@ -1,46 +1,36 @@
 #!/bin/bash
 
-bash /mnt/lfs/usr/1-binutils_setup.sh
-sleep 10   
-bash /mnt/lfs/usr/2-GCC_setup.sh    
-sleep 10   
-bash /mnt/lfs/usr/3-Linux_API_Headers.sh        
-sleep 10   
-bash /mnt/lfs/usr/4-Glibc_setup.sh 
-sleep 10                   
-bash /mnt/lfs/usr/5-Libstdc++.sh   
-sleep 10                    
-bash /mnt/lfs/usr/6-M4.sh
-sleep 10 
-bash /mnt/lfs/usr/7-Ncurses.sh
-sleep 10 
-bash /mnt/lfs/usr/8-Bash.sh
-sleep 10 
-bash /mnt/lfs/usr/9-Coreutils.sh
-sleep 10 
-bash /mnt/lfs/usr/10-Diffutils.sh
-sleep 10 
-bash /mnt/lfs/usr/11-File.sh     
-sleep 10 
-bash /mnt/lfs/usr/12-Findutils.sh
-sleep 10 
-bash /mnt/lfs/usr/13-Gawk.sh    
-sleep 10 
-bash /mnt/lfs/usr/14-Grep.sh     
-sleep 10 
-bash /mnt/lfs/usr/15-Gzip.sh     
-sleep 10 
-bash /mnt/lfs/usr/16-Make.sh
-sleep 10 
-bash /mnt/lfs/usr/17-Patch.sh
-sleep 10 
-bash /mnt/lfs/usr/18-Sed.sh
-sleep 10 
-bash /mnt/lfs/usr/19-Tar.sh
-sleep 60
-bash /mnt/lfs/usr/20-Xz.sh
-sleep 60
-bash /mnt/lfs/usr/21-Binutils.sh
-sleep 10 
-bash /mnt/lfs/usr/22-GCC.sh
-sleep 10 
+# Export the path
+export LFS_PATH=/mnt/lfs/usr/
+
+# Array of script files
+scripts=(
+    "1-binutils_setup.sh"
+    "2-GCC_setup.sh"
+    "3-Linux_API_Headers.sh"
+    "4-Glibc_setup.sh"
+    "5-Libstdc++.sh"
+    "6-M4.sh"
+    "7-Ncurses.sh"
+    "8-Bash.sh"
+    "9-Coreutils.sh"
+    "10-Diffutils.sh"
+    "11-File.sh"
+    "12-Findutils.sh"
+    "13-Gawk.sh"
+    "14-Grep.sh"
+    "15-Gzip.sh"
+    "16-Make.sh"
+    "17-Patch.sh"
+    "18-Sed.sh"
+    "19-Tar.sh"
+    "20-Xz.sh"
+    "21-Binutils.sh"
+    "22-GCC.sh"
+)
+
+# Loop through each script file
+for script in "${scripts[@]}"; do
+    bash "${LFS_PATH}${script}"
+    sleep 3
+done

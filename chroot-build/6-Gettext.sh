@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Change to the LFS/sources directory
-cd $LFS/sources
+# Change to the LFS//sources directory
+cd /sources
 
 # Echo a message to the console indicating that Gettext is being extracted
 echo "Extracting Gettext"
@@ -11,7 +11,7 @@ echo "Extracting Gettext"
 tar -xvf gettext-0.22.4.tar.xz
 
 # Change to the extracted Gettext directory
-cd $LFS/sources/gettext-0.22.4
+cd gettext-0.22.4
 
 # Run the configure script with the --disable-shared option to disable the creation of shared libraries
 ./configure --disable-shared
@@ -22,8 +22,8 @@ make
 # Copy the msgfmt, msgmerge, and xgettext utilities to the /usr/bin directory
 cp -v gettext-tools/src/{msgfmt,msgmerge,xgettext} /usr/bin
 
-# Change back to the LFS/sources directory
-cd $LFS/sources
+# Change back to the /sources directory
+cd /sources
 
 # Remove the extracted Gettext directory and its contents
 rm -rf gettext-0.22.4

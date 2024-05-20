@@ -39,9 +39,7 @@ export MAKEFLAGS=-j$(nproc)
 if [ -f $LFS/usr/setup_cross_comp.sh ]; then
     # Run the cross_comp setup script
     bash $LFS/usr/setup_cross_comp.sh
-
     exit 1
-
 fi
 
 EOF

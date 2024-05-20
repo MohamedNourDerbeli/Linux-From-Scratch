@@ -68,4 +68,6 @@ bash 8-Perl.sh
 bash 9-Python.sh 
 bash 10-Texinfo.sh 
 bash 11-Util-linux.sh 
+bash 12-CleanupSaveTempSys.sh 
+rm -rf *.sh
 '

@@ -1,14 +1,14 @@
 #!/bin/bash
 
-# Change to the LFS/sources directory
-cd $LFS/sources
+# Change to the /sources directory
+cd /sources
 
 # Extract the Texinfo archive
 echo "Extracting Texinfo"
 tar -xvf texinfo-7.1.tar.xz
 
 # Change to the extracted Texinfo directory
-cd $LFS/sources/texinfo-7.1
+cd texinfo-7.1
 
 # Configure Texinfo with the prefix set to /usr
 ./configure --prefix=/usr
@@ -19,8 +19,8 @@ make
 # Install Texinfo
 make install
 
-# Change back to the LFS/sources directory
-cd $LFS/sources
+# Change back to the /sources directory
+cd /sources
 
 # Remove the extracted Texinfo directory
 rm -rf texinfo-7.1

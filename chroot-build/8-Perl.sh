@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Change into the LFS/sources directory
-cd $LFS/sources
+# Change into the /sources directory
+cd /sources
 
 # Print a message to indicate that Perl is being extracted
 echo "Extracting Perl"
@@ -10,7 +10,7 @@ echo "Extracting Perl"
 tar -xvf perl-5.38.2.tar.xz
 
 # Change into the extracted Perl directory
-cd $LFS/sources/perl-5.38.2
+cd perl-5.38.2
 
 # Run the Perl Configure script with the following options:
 # -des: enable dynamic loading of extensions
@@ -40,8 +40,8 @@ make
 # Install Perl
 make install
 
-# Change back into the LFS/sources directory
-cd $LFS/sources
+# Change back into the /sources directory
+cd /sources
 
 # Remove the extracted Perl directory
 rm -rf perl-5.38.2
