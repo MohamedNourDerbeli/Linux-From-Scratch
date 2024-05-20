@@ -2,8 +2,9 @@
 # This script will Set up the Environment
 
 echo "Setting up lfs user's environment..."
-# Create .bash_profile for the lfs user
-sudo -E -u lfs config/.bash_profile
 
-# Create .bashrc for the lfs user
-sudo -E -u lfs config/.bashrc
+sudo chmod +x config/.bash_profile
+sudo chmod +x config/.bashrc
+
+sudo -E -u lfs /bin/bash -c 'source config/.bash_profile'
+sudo -E -u lfs /bin/bash -c 'source config/.bashrc'

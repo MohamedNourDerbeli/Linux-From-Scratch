@@ -28,7 +28,9 @@ time ../configure                   \
     --enable-gprofng=no        \
     --disable-werror           \
     --enable-64-bit-bfd        \
-    --enable-default-hash-style=gnu && make && make DESTDIR=$LFS install
+    --enable-default-hash-style=gnu 
+
+make && make DESTDIR=$LFS install
 
 # Remove unnecessary libraries
 rm -v $LFS/usr/lib/lib{bfd,ctf,ctf-nobfd,opcodes,sframe}.{a,la}

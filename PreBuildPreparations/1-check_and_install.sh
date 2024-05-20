@@ -26,8 +26,29 @@ check_and_install() {
     else
         echo "All required packages are installed and up to date."
     fi
+
+    # Check if /bin/sh is symlinked to Bash, if not, fix it
+    if [ "$(readlink -f /bin/sh)" != "/bin/bash" ]; then
+        echo "Fixing /bin/sh symlink..."
+        sudo ln -sf /bin/bash /bin/sh
+        echo "Symlink /bin/sh to Bash fixed."
+    fi
 }
 
+# Define the packages to check and install
+packages=("build-essential" "pv")
+
+# Loop through each package
+for pkg in "${packages[@]}"; do
+    # Check if the package is already installed
+    if dpkg -s "$pkg" > /dev/null 2>&1; then
+        echo "$pkg is already installed."
+    else
+        echo "Installing $pkg..."
+        sudo apt-get update
+        sudo apt-get install -y "$pkg"
+    fi
+done
 
 # Execute the function
 check_and_install

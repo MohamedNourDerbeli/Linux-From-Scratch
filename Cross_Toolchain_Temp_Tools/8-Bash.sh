@@ -5,7 +5,7 @@ cd $LFS/sources
 
 # Extract Bash
 echo "Extracting Bash"
-tar -xvJf bash-5.2.21.tar.gz
+tar -xzvf bash-5.2.21.tar.gz
 
 # Change to the extracted Bash directory
 cd $LFS/sources/bash-5.2.21

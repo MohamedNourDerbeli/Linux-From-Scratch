@@ -12,7 +12,7 @@ LFS="/mnt/lfs"
 
 # Function to execute scripts
 run_script() {
-    if! bash "$1"; then
+    if ! bash "$1"; then
         echo "Failed to execute $1"
         exit 1
     fi
@@ -28,8 +28,16 @@ done
 # Execute the setup_lfs_profile.sh script
 ./PreBuildPreparations/6-setup_lfs_profile.sh
 
-# Copy temporary tools to LFS
-cp Cross_Toolchain_Temp_Tools/* "$LFS/usr" && chmod +x "$LFS/usr"/*.sh
+# Copy the directory to $LFS/usr && Change permissions of .sh
+chmod +x Cross_Toolchain_Temp_Tools
+sudo cp -r Cross_Toolchain_Temp_Tools/*.sh "$LFS/usr/"
 
 # Switch to LFS user for further setup
-su - lfs 
+su - lfs
+cp chroot-build/*.sh $LFS/usr
+chmod +x chroot-build/*.sh
+
+# Run each script in chroot-build directory
+bash chroot-build/1-Change-own.sh
+bash chroot-build/2-KernelFSOwnership.sh
+bash chroot-build/3-ChrootEnvironment.sh

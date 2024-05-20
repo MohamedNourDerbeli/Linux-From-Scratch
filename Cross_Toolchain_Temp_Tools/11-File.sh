@@ -5,7 +5,7 @@ cd $LFS/sources
 
 # Extract the file-5.45.tar.gz archive
 echo "Extracting File"
-tar -xvJf file-5.45.tar.gz
+tar -xzvf file-5.45.tar.gz
 
 # Change into the extracted file-5.45 directory
 cd $LFS/sources/file-5.45
