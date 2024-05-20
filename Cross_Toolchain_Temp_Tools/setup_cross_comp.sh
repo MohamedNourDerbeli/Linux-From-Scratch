@@ -1,18 +1,46 @@
 #!/bin/bash
 
-# Function to execute scripts
-run_script() {
-    if ! bash "$1"; then
-        echo "Failed to execute $1"
-        exit 1
-    fi
-}
-
-# Loop through scripts in numerical order
-for script in $(ls -v $LFS/usr/*.sh); do
-    if [[ "$(basename "$script")" =~ ^[0-22]+- ]]; then
-        echo "Start: $script"
-        sleep 5
-        run_script "$script"
-    fi
-done
+bash /mnt/lfs/usr/1-binutils_setup.sh
+sleep 10   
+bash /mnt/lfs/usr/2-GCC_setup.sh    
+sleep 10   
+bash /mnt/lfs/usr/3-Linux_API_Headers.sh        
+sleep 10   
+bash /mnt/lfs/usr/4-Glibc_setup.sh 
+sleep 10                   
+bash /mnt/lfs/usr/5-Libstdc++.sh   
+sleep 10                    
+bash /mnt/lfs/usr/6-M4.sh
+sleep 10 
+bash /mnt/lfs/usr/7-Ncurses.sh
+sleep 10 
+bash /mnt/lfs/usr/8-Bash.sh
+sleep 10 
+bash /mnt/lfs/usr/9-Coreutils.sh
+sleep 10 
+bash /mnt/lfs/usr/10-Diffutils.sh
+sleep 10 
+bash /mnt/lfs/usr/11-File.sh     
+sleep 10 
+bash /mnt/lfs/usr/12-Findutils.sh
+sleep 10 
+bash /mnt/lfs/usr/13-Gawk.sh    
+sleep 10 
+bash /mnt/lfs/usr/14-Grep.sh     
+sleep 10 
+bash /mnt/lfs/usr/15-Gzip.sh     
+sleep 10 
+bash /mnt/lfs/usr/16-Make.sh
+sleep 10 
+bash /mnt/lfs/usr/17-Patch.sh
+sleep 10 
+bash /mnt/lfs/usr/18-Sed.sh
+sleep 10 
+bash /mnt/lfs/usr/19-Tar.sh
+sleep 60
+bash /mnt/lfs/usr/20-Xz.sh
+sleep 60
+bash /mnt/lfs/usr/21-Binutils.sh
+sleep 10 
+bash /mnt/lfs/usr/22-GCC.sh
+sleep 10 

@@ -5,7 +5,7 @@ cd $LFS/sources
 
 # Extract the Texinfo archive
 echo "Extracting Texinfo"
-tar -xvJf texinfo-7.1.tar.xz
+tar -xvf texinfo-7.1.tar.xz
 
 # Change to the extracted Texinfo directory
 cd $LFS/sources/texinfo-7.1

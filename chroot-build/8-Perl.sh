@@ -7,7 +7,7 @@ cd $LFS/sources
 echo "Extracting Perl"
 
 # Extract the Perl tarball using tar with verbose and Jneustadt flags
-tar -xvJf perl-5.38.2.tar.xz
+tar -xvf perl-5.38.2.tar.xz
 
 # Change into the extracted Perl directory
 cd $LFS/sources/perl-5.38.2

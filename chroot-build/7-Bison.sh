@@ -5,7 +5,7 @@ cd $LFS/sources
 
 # Extract Bison
 echo "Extracting Bison"
-tar -xvJf bison-3.8.2.tar.xz
+tar -xvf bison-3.8.2.tar.xz
 
 # Change to the extracted Bison directory
 cd $LFS/sources/bison-3.8.2

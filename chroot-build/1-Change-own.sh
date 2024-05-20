@@ -12,5 +12,3 @@ case $(uname -m) in
     chown -R root:root $LFS/lib64
     ;;
 esac
-
-echo "Ownership of $LFS directories has been changed to root:root."

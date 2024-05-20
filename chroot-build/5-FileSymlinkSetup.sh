@@ -57,16 +57,15 @@ echo "tester:x:101:" >> /etc/group
 install -o tester -d /home/tester
 
 # Execute /usr/bin/bash with --login option
-exec /usr/bin/bash --login
-
-# Create empty files in /var/log directory
+exec /usr/bin/bash --login -c '
 touch /var/log/{btmp,lastlog,faillog,wtmp}
-
-# Change group ownership of /var/log/lastlog to 'utmp'
 chgrp -v utmp /var/log/lastlog
-
-# Set permissions for /var/log/lastlog to 664 (rw-rw-r--)
 chmod -v 664  /var/log/lastlog
-
-# Set permissions for /var/log/btmp to 600 (rw-------)
 chmod -v 600  /var/log/btmp
+bash 6-Gettext.sh 
+bash 7-Bison.sh 
+bash 8-Perl.sh 
+bash 9-Python.sh 
+bash 10-Texinfo.sh 
+bash 11-Util-linux.sh 
+'

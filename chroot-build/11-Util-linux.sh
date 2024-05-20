@@ -5,7 +5,7 @@ cd $LFS/sources
 
 # Extract Util-linux
 echo "Extracting Util-linux"
-tar -xvJf util-linux-2.39.3.tar.xz
+tar -xvf util-linux-2.39.3.tar.xz
 
 # Change to the extracted Util-linux directory
 cd $LFS/sources/util-linux-2.39.3

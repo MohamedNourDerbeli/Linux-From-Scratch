@@ -10,22 +10,17 @@ mkdir -pv $LFS/{dev,proc,sys,run}
 mount -v --bind /dev $LFS/dev
 
 # Mount the devpts file system to the LFS/dev/pts directory
-mount -vt devpts devpts -o gid=5,mode=0620 $LFS/dev/pts
-
 # Mount the proc file system to the LFS/proc directory
-mount -vt proc proc $LFS/proc
-
 # Mount the sysfs file system to the LFS/sys directory
-mount -vt sysfs sysfs $LFS/sys
-
 # Mount the tmpfs file system to the LFS/run directory
+mount -vt devpts devpts -o gid=5,mode=0620 $LFS/dev/pts
+mount -vt proc proc $LFS/proc
+mount -vt sysfs sysfs $LFS/sys
 mount -vt tmpfs tmpfs $LFS/run
 
 # Check if /dev/shm is a symbolic link
 if [ -h $LFS/dev/shm ]; then
-  # If it is, create a directory in the LFS directory with the same name as the target of the symbolic link
   install -v -d -m 1777 $LFS$(realpath /dev/shm)
 else
-  # If it is not, mount the tmpfs file system to the LFS/dev/shm directory
   mount -vt tmpfs -o nosuid,nodev tmpfs $LFS/dev/shm
 fi

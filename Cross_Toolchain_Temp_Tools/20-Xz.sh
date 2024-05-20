@@ -20,14 +20,16 @@ echo "Configuring and building Xz"
 # --disable-static disables the building of static libraries
 # --docdir=/usr/share/doc/xz-5.4.6 sets the documentation directory
 # time command is used to display the execution time
-time ./configure --prefix=/usr                     \
+./configure --prefix=/usr                     \
             --host=$LFS_TGT                   \
             --build=$(build-aux/config.guess) \
             --disable-static                  \
             --docdir=/usr/share/doc/xz-5.4.6
 
 # Build and install Xz
-make && make DESTDIR=$LFS install
+make
+
+make DESTDIR=$LFS install
 
 # Remove the liblzma.la file
 rm -v $LFS/usr/lib/liblzma.la

@@ -8,7 +8,7 @@ echo "Extracting Gettext"
 
 # Extract the Gettext tarball using the tar command with the -x (extract) and -v (verbose) options,
 # and the -J (xz) option to specify the compression algorithm
-tar -xvJf gettext-0.22.4.tar.xz
+tar -xvf gettext-0.22.4.tar.xz
 
 # Change to the extracted Gettext directory
 cd $LFS/sources/gettext-0.22.4

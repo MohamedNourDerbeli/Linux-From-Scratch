@@ -38,17 +38,6 @@ cp chroot-build/*.sh $LFS/usr
 chmod +x chroot-build/*.sh
 
 # Run each script in chroot-build directory
-for script in $(ls -v chroot-build/*.sh); do
-    if [[ "$(basename "$script")" =~ ^[0-3]+- ]]; then
-        bash $script
-    fi
-done
-
-# exit
-
-# mountpoint -q $LFS/dev/shm && umount $LFS/dev/shm
-# umount $LFS/dev/pts
-# umount $LFS/{sys,proc,run,dev}
-
-# cd $LFS
-# tar -cJpf $HOME/lfs-temp-tools-12.1.tar.xz .
+bash chroot-build/1-Change-own.sh
+bash chroot-build/2-KernelFSOwnership.sh
+bash chroot-build/3-ChrootEnvironment.sh
