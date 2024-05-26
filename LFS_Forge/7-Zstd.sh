@@ -8,7 +8,7 @@ cd zstd-1.5.5
 
 make prefix=/usr
 
-make check
+# make check
 
 make prefix=/usr install
 

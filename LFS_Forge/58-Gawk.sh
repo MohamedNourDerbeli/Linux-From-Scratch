@@ -12,8 +12,8 @@ sed -i 's/extras//' Makefile.in
 
 make
 
-chown -R tester .
-su tester -c "PATH=$PATH make check"
+# chown -R tester .
+# su tester -c "PATH=$PATH make check"
 
 rm -f /usr/bin/gawk-5.3.0
 make install

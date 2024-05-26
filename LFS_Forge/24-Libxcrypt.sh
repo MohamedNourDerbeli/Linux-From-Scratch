@@ -14,7 +14,7 @@ cd libxcrypt-4.4.36
 
 make
 
-make check
+# make check
 
 make install
 

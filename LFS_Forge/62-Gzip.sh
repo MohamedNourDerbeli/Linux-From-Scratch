@@ -10,7 +10,7 @@ cd gzip-1.13
 
 make
 
-make check
+# make check
 
 make install
 

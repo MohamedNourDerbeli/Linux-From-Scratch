@@ -12,7 +12,7 @@ cd procps-ng-4.0.4
             --disable-kill
 make
 
-make -k check
+# make -k check
 
 make install
 

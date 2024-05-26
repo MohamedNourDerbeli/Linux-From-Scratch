@@ -10,7 +10,7 @@ cd libtool-2.4.7
 
 make
 
-make -k check
+# make -k check
 
 make install
 

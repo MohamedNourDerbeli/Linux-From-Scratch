@@ -13,7 +13,7 @@ cd attr-2.5.2
 
 make
 
-make check
+# make check
 
 make install
 

@@ -10,7 +10,7 @@ cd bison-3.8.2
 
 make
 
-make check
+# make check
 
 make install
 

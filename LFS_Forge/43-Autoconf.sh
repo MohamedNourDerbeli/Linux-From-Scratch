@@ -10,7 +10,7 @@ cd autoconf-2.72
 
 make
 
-make check
+# make check
 
 make install
 

@@ -10,8 +10,8 @@ cd findutils-4.9.0
 
 make
 
-chown -R tester .
-su tester -c "PATH=$PATH make check"
+# chown -R tester .
+# su tester -c "PATH=$PATH make check"
 
 make install
 

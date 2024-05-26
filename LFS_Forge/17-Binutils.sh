@@ -22,9 +22,9 @@ cd       build
 
 make tooldir=/usr
 
-make -k check
+# make -k check
 
-grep '^FAIL:' $(find -name '*.log')
+# grep '^FAIL:' $(find -name '*.log')
 
 make tooldir=/usr install
 

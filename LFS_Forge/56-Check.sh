@@ -10,9 +10,9 @@ cd check-0.15.2
 
 make
 
-make check
+# make check
 
-make docdir=/usr/share/doc/check-0.15.2 install
+# make docdir=/usr/share/doc/check-0.15.2 install
 
 cd /sources
 

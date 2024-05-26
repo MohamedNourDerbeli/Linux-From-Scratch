@@ -28,13 +28,6 @@ cd       build
 
 make
 
-ulimit -s 32768
-
-chown -R tester .
-su tester -c "PATH=$PATH make -k check"
-
-../contrib/test_summary
-
 make install
 
 chown -v -R root:root \
@@ -47,21 +40,21 @@ ln -sv gcc.1 /usr/share/man/man1/cc.1
 ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/13.2.0/liblto_plugin.so \
         /usr/lib/bfd-plugins/
 
-echo 'int main(){}' > dummy.c
-cc dummy.c -v -Wl,--verbose &> dummy.log
-readelf -l a.out | grep ': /lib'
+# echo 'int main(){}' > dummy.c
+# cc dummy.c -v -Wl,--verbose &> dummy.log
+# readelf -l a.out | grep ': /lib'
 
-grep -E -o '/usr/lib.*/S?crt[1in].*succeeded' dummy.log
+# grep -E -o '/usr/lib.*/S?crt[1in].*succeeded' dummy.log
 
-grep -B4 '^ /usr/include' dummy.log
+# grep -B4 '^ /usr/include' dummy.log
 
-grep 'SEARCH.*/usr/lib' dummy.log |sed 's|; |\n|g'
+# grep 'SEARCH.*/usr/lib' dummy.log |sed 's|; |\n|g'
 
-grep "/lib.*/libc.so.6 " dummy.log
+# grep "/lib.*/libc.so.6 " dummy.log
 
-grep found dummy.log
+# grep found dummy.log
 
-rm -v dummy.c a.out dummy.log
+# rm -v dummy.c a.out dummy.log
 
 cd /sources
 

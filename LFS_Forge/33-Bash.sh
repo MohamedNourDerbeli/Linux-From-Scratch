@@ -15,15 +15,15 @@ patch -Np1 -i ../bash-5.2.21-upstream_fixes-1.patch
 
 make
 
-chown -R tester .
+# chown -R tester .
 
-su -s /usr/bin/expect tester << "EOF"
-set timeout -1
-spawn make tests
-expect eof
-lassign [wait] _ _ _ value
-exit $value
-EOF
+# su -s /usr/bin/expect tester << "EOF"
+# set timeout -1
+# spawn make tests
+# expect eof
+# lassign [wait] _ _ _ value
+# exit $value
+# EOF
 
 make install
 

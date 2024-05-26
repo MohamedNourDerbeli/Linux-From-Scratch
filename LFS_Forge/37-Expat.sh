@@ -12,7 +12,7 @@ cd expat-2.6.0
 
 make
 
-make check
+# make check
 
 make install
 

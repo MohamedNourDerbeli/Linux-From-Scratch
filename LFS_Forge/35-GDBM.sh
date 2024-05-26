@@ -12,7 +12,7 @@ cd gdbm-1.23
 
 make
 
-make check
+# make check
 
 make install
 

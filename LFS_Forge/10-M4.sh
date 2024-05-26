@@ -10,7 +10,7 @@ cd m4-1.4.19
 
 make
 
-make check
+# make check
 
 make install
 

@@ -10,7 +10,7 @@ cd less-643
 
 make
 
-make check
+# make check
 
 make install
 

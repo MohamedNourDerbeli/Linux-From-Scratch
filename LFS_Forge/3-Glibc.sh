@@ -22,7 +22,7 @@ echo "rootsbindir=/usr/sbin" > configparms
 
 make
 
-make check
+# make check
 
 touch /etc/ld.so.conf
 

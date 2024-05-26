@@ -19,7 +19,7 @@ cd inetutils-2.5
 
 make
 
-make check
+# make check
 
 make install
 

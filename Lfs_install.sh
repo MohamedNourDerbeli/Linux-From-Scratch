@@ -36,7 +36,7 @@ sudo cp -r Cross_Toolchain_Temp_Tools/*.sh "$LFS/usr/"
 su - lfs
 cp chroot-build/*.sh $LFS/usr
 chmod +x chroot-build/*.sh
-
+rm -rf /mnt/lfs/usr/*.sh
 # Run each script in chroot-build directory
 bash chroot-build/1-Change-own.sh
 bash chroot-build/2-KernelFSOwnership.sh

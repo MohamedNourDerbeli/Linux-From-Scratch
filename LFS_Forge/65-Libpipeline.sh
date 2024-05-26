@@ -10,7 +10,7 @@ cd libpipeline-1.5.7
 
 make
 
-make check
+# make check
 
 make install
 

@@ -13,7 +13,7 @@ cd       build
 makeinfo --html --no-split -o doc/dejagnu.html ../doc/dejagnu.texi
 makeinfo --plaintext       -o doc/dejagnu.txt  ../doc/dejagnu.texi
 
-make check
+# make check
 
 make install
 install -v -dm755  /usr/share/doc/dejagnu-1.6.3

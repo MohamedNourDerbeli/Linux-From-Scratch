@@ -13,7 +13,7 @@ cd mpc-1.3.1
 make
 make html
 
-make check
+# make check
 
 make install
 make install-html

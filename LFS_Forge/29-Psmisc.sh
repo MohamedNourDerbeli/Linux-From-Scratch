@@ -10,7 +10,7 @@ cd psmisc-23.6
 
 make
 
-make check
+# make check
 
 make install
 

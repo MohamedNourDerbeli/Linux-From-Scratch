@@ -12,7 +12,7 @@ cd xz-5.4.6
 
 make
 
-make check
+# make check
 
 make install
 

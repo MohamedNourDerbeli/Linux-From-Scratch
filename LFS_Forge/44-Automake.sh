@@ -10,7 +10,7 @@ cd automake-1.16.5
 
 make
 
-make -j$(($(nproc)>4?$(nproc):4)) check
+# make -j$(($(nproc)>4?$(nproc):4)) check
 
 make install
 

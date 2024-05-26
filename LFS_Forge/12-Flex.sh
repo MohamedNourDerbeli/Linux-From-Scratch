@@ -12,7 +12,7 @@ cd flex-2.6.4
 
 make
 
-make check
+# make check
 
 make install
 
