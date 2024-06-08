@@ -3,6 +3,12 @@
 # Export the LFS variable, which points to the LFS partition
 export LFS="/mnt/lfs"
 
+# must be super user (use 'sudo su')
+if [ "$(id -u)" -ne 0 ]; then
+   echo "This script must be run as root" >&2
+   exit 1
+fi
+
 # Copy all shell scripts from chroot-build directory to $LFS and make them executable
 cp -r LFS_Forge "$LFS" && chmod +x "$LFS"/LFS_Forge/*.sh
 # Enter chroot environment and execute setup_chroot-build.sh

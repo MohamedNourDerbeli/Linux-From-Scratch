@@ -3,6 +3,12 @@
 # Navigate to the directory containing the source code
 cd $LFS/sources
 
+# must be super user (use 'sudo su')
+if [ "$(id -u)" -ne 0 ]; then
+   echo "This script must be run as root" >&2
+   exit 1
+fi
+
 # Extract the source code for GCC
 echo "Extracting GCC"
 tar -xvJf gcc-13.2.0.tar.xz

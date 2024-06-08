@@ -3,6 +3,12 @@
 # Export the LFS variable containing the path to the LFS directory
 export LFS="/mnt/lfs"
 
+# must be super user (use 'sudo su')
+if [ "$(id -u)" -ne 0 ]; then
+   echo "This script must be run as root" >&2
+   exit 1
+fi
+
 # Create the necessary directories in the LFS directory
 mkdir -pv $LFS/{dev,proc,sys,run}
 

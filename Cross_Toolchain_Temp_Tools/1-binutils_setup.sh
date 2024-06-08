@@ -1,5 +1,12 @@
 #!/bin/bash
 # LFS environment variables
+
+# must be super user (use 'sudo su')
+if [ "$(id -u)" -ne 0 ]; then
+   echo "This script must be run as root" >&2
+   exit 1
+fi
+
 export LFS="/mnt/lfs"
 export LFS_TGT="$(uname -m)-lfs-linux-gnu"
 

@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# must be super user (use 'sudo su')
+if [ "$(id -u)" -ne 0 ]; then
+   echo "This script must be run as root" >&2
+   exit 1
+fi
+
 # Navigate to the directory containing the source code
 # This is where the script assumes the source code is located
 cd $LFS/sources

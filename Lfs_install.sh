@@ -30,7 +30,7 @@ done
 
 # Copy the directory to $LFS/usr && Change permissions of .sh
 chmod +x Cross_Toolchain_Temp_Tools
-sudo cp -r Cross_Toolchain_Temp_Tools/*.sh "$LFS/usr/"
+cp -r Cross_Toolchain_Temp_Tools/*.sh "$LFS/usr/"
 
 # Switch to LFS user for further setup
 su - lfs

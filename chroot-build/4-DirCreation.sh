@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# must be super user (use 'sudo su')
+if [ "$(id -u)" -ne 0 ]; then
+   echo "This script must be run as root" >&2
+   exit 1
+fi
+
 # Create essential system directories with -p option to avoid errors if they already exist
 mkdir -pv /{boot,home,mnt,opt,srv}
 
