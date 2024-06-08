@@ -6,6 +6,8 @@ export LFS="/mnt/lfs"
 # Copy all shell scripts from chroot-build directory to $LFS and make them executable
 cp -r LFS_Forge "$LFS" && chmod +x "$LFS"/LFS_Forge/*.sh
 # Enter chroot environment and execute setup_chroot-build.sh
+
+# PS1: env variable name of the user with root privileges
 chroot "$LFS" /usr/bin/env -i \
     HOME=/root \
     TERM="$TERM" \
@@ -28,4 +30,3 @@ chroot "$LFS" /usr/bin/env -i \
             rm -rf /LFS_Forge
         fi
     '
-
