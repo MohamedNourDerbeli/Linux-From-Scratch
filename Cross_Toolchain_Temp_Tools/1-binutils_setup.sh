@@ -16,13 +16,13 @@ cd $LFS/sources/binutils-2.42/build
 
 echo "Configuring and building Binutils"
 # Configure Build and install Binutils
-time { ../configure --prefix=$LFS/tools \
+../configure --prefix=$LFS/tools \
               --with-sysroot=$LFS \
               --target=$LFS_TGT \
               --disable-nls \
               --enable-gprofng=no \
               --disable-werror \
-              --enable-default-hash-style=gnu && make && make install; }
+              --enable-default-hash-style=gnu && make && make install; 
 
 # Clean up
 cd $LFS/sources
