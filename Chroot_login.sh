@@ -2,7 +2,7 @@
 
 export LFS="/mnt/lfs"
 
-
+mount /dev/sdc4 /mnt/lfs
 mount -v --bind /dev $LFS/dev
 
 mount -vt devpts devpts -o gid=5,mode=0620 $LFS/dev/pts
