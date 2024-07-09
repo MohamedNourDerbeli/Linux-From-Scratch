@@ -3,61 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Project Name</title>
+    <meta name="description" content="Linux-From-Scratch project landing page showcasing features, team, and project details.">
+    <meta name="keywords" content="Linux, From Scratch, LFS, Operating System, Custom Linux, Project">
+    <title>Linux-From-Scratch</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="background-container"></div>
     <header>
-        <nav>
-            <ul>
-                <li><a href="#features">Features</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="YOUR_DEPLOYED_PROJECT_LINK">Go to Project</a></li>
-            </ul>
-        </nav>
+        <div class="nav-container">
+            <div class="logo">
+                <h1>Linux-From-Scratch</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="https://github.com/MohamedNourDerbeli/Linux-From-Scratch">Go to Project</a></li>
+                </ul>
+            </nav>
+        </div>
         <div class="intro">
-            <img src="cover-image.jpg" alt="Cover Image">
-            <h1>Your Project Name</h1>
-            <p>Your one-line phrase and/or description of your project</p>
+            <img src="https://images.pexels.com/photos/2931251/pexels-photo-2931251.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Cover Image" class="cover-image">
+            <div class="intro-text">
+                <h2>"The Linux philosophy is Laugh in the face of danger."</h2>
+            </div>
         </div>
     </header>
+    
     <section id="features">
-        <h2>Key Features</h2>
-        <div class="feature">
-            <img src="feature1.jpg" alt="Feature 1 Image">
-            <h3>Feature 1 Name</h3>
-            <p>Description of feature 1</p>
-        </div>
-        <div class="feature">
-            <img src="feature2.jpg" alt="Feature 2 Image">
-            <h3>Feature 2 Name</h3>
-            <p>Description of feature 2</p>
-        </div>
-        <div class="feature">
-            <img src="feature3.jpg" alt="Feature 3 Image">
-            <h3>Feature 3 Name</h3>
-            <p>Description of feature 3</p>
+        <h2>Features</h2>
+        <div class="features-grid">
+            <div class="feature">
+                <img src="https://i.blogs.es/e1b8b9/tux3/840_560.jpeg" alt="Customization Image">
+                <div class="feature-text">
+                    <h3>Customization and Control</h3>
+                    <p>With LFS, you have complete control over your Linux system, allowing you to customize every aspect of the OS to suit your specific needs and preferences.</p>
+                </div>
+            </div>
+            <div class="feature">
+                <img src="https://i.blogs.es/e1b8b9/tux3/840_560.jpeg" alt="Educational Experience Image">
+                <div class="feature-text">
+                    <h3>Educational Experience</h3>
+                    <p>Building LFS from scratch provides an in-depth understanding of Linux system internals, giving you hands-on experience with the build process and how various components interact.</p>
+                </div>
+            </div>
+            <div class="feature">
+                <img src="https://i.blogs.es/e1b8b9/tux3/840_560.jpeg" alt="Minimalist System Image">
+                <div class="feature-text">
+                    <h3>Minimalist System</h3>
+                    <p>LFS allows you to create a lean and efficient system without any unnecessary software, leading to better performance and a deeper appreciation for a minimalist approach.</p>
+                </div>
+            </div>
         </div>
     </section>
+    <section id="showcase">
+        <h2>Showcase</h2>
+        <div class="gallery-container">
+            <div class="gallery-item">
+                <img src="" alt="Feature 1">
+                <p class="caption">Feature 1 - Description of the feature or screenshot.</p>
+            </div>
+            <div class="gallery-item">
+                <img src="https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg" alt="Feature 2">
+                <p class="caption">Feature 2 - Description of the feature or screenshot.</p>
+            </div>
+            <div class="gallery-item">
+                <img src="https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg" alt="Feature 3">
+                <p class="caption">Feature 3 - Description of the feature or screenshot.</p>
+            </div>
+            <!-- Add more gallery items as needed -->
+        </div>
+    </section>
+    
+    
+    <section id="roadmap">
+        <h2>Project Roadmap</h2>
+        <div class="roadmap-container">
+            <div class="roadmap-item">
+                <h3>Q3 2024</h3>
+                <p>Initial release of core features and documentation.</p>
+            </div>
+            <div class="roadmap-item">
+                <h3>Q4 2024</h3>
+                <p>Beta testing and feedback collection. Implement enhancements based on user feedback.</p>
+            </div>
+            <div class="roadmap-item">
+                <h3>Q1 2025</h3>
+                <p>Official release with additional features and improved stability.</p>
+            </div>
+            <!-- Add more roadmap items as needed -->
+        </div>
+    </section>
+    
     <section id="about">
         <h2>About This Project</h2>
-        <p>Description of what inspired the project. This is a personal story, including the timeline. Mention this is a Portfolio Project for Holberton School with a link.</p>
+        <p class="about-text">
+            This project was inspired by a desire to gain a deeper understanding of Linux and its inner workings. Building LFS from scratch has been a challenging and rewarding experience, showcasing the power and flexibility of Linux. This project is part of our portfolio for Holberton School.
+        </p>
         <div class="team">
             <h3>Team Members</h3>
-            <ul>
-                <li>
-                    <p>Team Member Name</p>
-                    <a href="LINKEDIN_PROFILE">LinkedIn</a> | 
-                    <a href="GITHUB_PROFILE">GitHub</a> | 
-                    <a href="TWITTER_PROFILE">Twitter</a>
-                </li>
+            <div class="team-members">
+                <div class="team-member">
+                    <img src="https://pics.craiyon.com/2023-11-29/9njwOL_xQ_q8YKMnJjG1HQ.webp" alt="Hazem Ouni" class="profile-img">
+                    <div class="team-info">
+                        <p class="member-name">Hazem Ouni</p>
+                        <p class="social-links">
+                            <a href="LINKEDIN_PROFILE" class="social-link">LinkedIn</a> | 
+                            <a href="GITHUB_PROFILE" class="social-link">GitHub</a> | 
+                        </p>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <img src="https://img.freepik.com/premium-photo/photo-shocked-cute-snake-nature-blured-background-ai-generative_407474-14460.jpg" alt="MohamedNourDerbeli" class="profile-img">
+                    <div class="team-info">
+                        <p class="member-name">Nour Derbeli</p>
+                        <p class="social-links">
+                            <a href="https://www.linkedin.com/in/md-nr-db/" class="social-link">LinkedIn</a> | 
+                            <a href="https://github.com/MohamedNourDerbeli/" class="social-link">GitHub</a> | 
+                        </p>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <img src="https://img.lovepik.com/bg/20231206/cute-baby-pink-snake-3d-illustration-by-mic_2450770_wh1200.png" alt="Saif Chaari" class="profile-img">
+                    <div class="team-info">
+                        <p class="member-name">Saif Chaari</p>
+                        <p class="social-links">
+                            <a href="LINKEDIN_PROFILE" class="social-link">LinkedIn</a> | 
+                            <a href="https://github.com/sachihiroo" class="social-link">GitHub</a> | 
+                        </p>
+                    </div>
+                </div>
                 <!-- Add more team members as needed -->
-            </ul>
+            </div>
         </div>
-        <p><a href="GITHUB_REPOSITORY">GitHub Repository for the project</a></p>
+        <p class="repo-link"><a href="https://github.com/MohamedNourDerbeli/Linux-From-Scratch">GitHub Repository for the project</a></p>
     </section>
+    
     <footer>
-        <p>&copy; 2024 Your Project Name</p>
+        <p>&copy; 2024 Linux-From-Scratch</p>
     </footer>
 </body>
 </html>
