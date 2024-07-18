@@ -1,0 +1,63 @@
+#!/bin/bash
+
+# Function to unmount bind mounts
+function umountbind {
+    if mountpoint -q $LFS/$1; then
+        $SUDO umount $LFS/$1 2>/dev/null
+        if [ $? -ne 0 ]; then
+            echo "Failed to unmount $LFS/$1. Trying lazy unmount..."
+            $SUDO umount -l $LFS/$1
+        else
+            echo "$LFS/$1 unmounted"
+        fi
+    else
+        echo "$LFS/$1 already unmounted"
+    fi
+}
+
+# Function to unmount file system types
+function umounttype {
+    if mountpoint -q $LFS/$1; then
+        $SUDO umount -t $2 $LFS/$1 2>/dev/null
+        if [ $? -ne 0 ]; then
+            echo "Failed to unmount $LFS/$1. Trying lazy unmount..."
+            $SUDO umount -l $LFS/$1
+            echo "$LFS/$1 unmounted"
+        else
+            echo "$LFS/$1 unmounted"
+        fi
+    else
+        echo "$LFS/$1 already unmounted"
+    fi
+}
+
+# Check for root privileges
+if [ $EUID -ne 0 ]; then
+    SUDO=sudo
+else
+    SUDO=""
+fi
+
+# Check if LFS variable is set
+if [ -z "$LFS" ]; then
+    echo "LFS not set"
+    exit 1
+fi
+
+# Unmount all specified directories and file systems
+umounttype dev/pts devpts
+umounttype proc proc
+umounttype sys sysfs
+umounttype run tmpfs
+
+# Handle special case for /dev/shm
+if [ -h $LFS/dev/shm ]; then
+    install -v -d -m 1777 $LFS$(realpath /dev/shm)
+else
+    umounttype dev/shm tmpfs
+fi
+
+umounttype dev
+umount /mnt/lfs/boot/efi
+umount /mnt/lfs/boot
+umount -l /mnt/lfs

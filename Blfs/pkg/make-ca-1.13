@@ -1,0 +1,69 @@
+#!/bin/bash
+
+set -e  # Exit immediately if a command exits with a non-zero status
+trap 'echo "An error occurred. Exiting..."; exit 1;' ERR
+
+cd /sources
+
+if ! which p11-kit > /dev/null 2>&1; then
+    echo "p11-kit not found. Installing p11-kit."
+    bash p11-kit-0.25.3
+    echo "p11-kit is installed."
+fi
+
+# Extract and install make-ca
+cd /sources
+tar -xvf make-ca-1.13.tar.xz
+cd make-ca-1.13
+make install
+
+# Create directory for local SSL certificates
+sudo install -vdm755 /etc/ssl/local
+
+# Generate initial certificate store
+sudo /usr/sbin/make-ca -g
+
+# Enable update-pki.timer (assuming it's a systemd service)
+sudo systemctl enable update-pki.timer
+
+# Download and install CAcert certificates
+cd /etc/ssl/local
+wget http://www.cacert.org/certs/root.crt
+wget http://www.cacert.org/certs/class3.crt
+
+openssl x509 -in root.crt -text -fingerprint -setalias "CAcert Class 1 root" \
+        -addtrust serverAuth -addtrust emailProtection -addtrust codeSigning \
+        > CAcert_Class_1_root.pem
+
+openssl x509 -in class3.crt -text -fingerprint -setalias "CAcert Class 3 root" \
+        -addtrust serverAuth -addtrust emailProtection -addtrust codeSigning \
+        > CAcert_Class_3_root.pem
+
+# Update certificate store
+sudo /usr/sbin/make-ca -r
+
+# Configure Disabled Makebelieve CA Root certificate
+openssl x509 -in /etc/ssl/certs/Makebelieve_CA_Root.pem \
+             -text \
+             -fingerprint \
+             -setalias "Disabled Makebelieve CA Root" \
+             -addreject serverAuth \
+             -addreject emailProtection \
+             -addreject codeSigning \
+       > /etc/ssl/local/Disabled_Makebelieve_CA_Root.pem
+
+# Update certificate store again
+sudo /usr/sbin/make-ca -r
+
+# Configure environment variable for Python's pip
+sudo mkdir -pv /etc/profile.d
+sudo bash -c 'cat > /etc/profile.d/pythoncerts.sh << "EOF"
+# Begin /etc/profile.d/pythoncerts.sh
+
+export _PIP_STANDALONE_CERT=/etc/pki/tls/certs/ca-bundle.crt
+
+# End /etc/profile.d/pythoncerts.sh
+EOF'
+
+# Source the profile script to apply the environment variable
+source /etc/profile.d/pythoncerts.sh

@@ -1,0 +1,80 @@
+#!/bin/bash
+
+set -e
+cd /sources
+
+wget https://invisible-mirror.net/archives/lynx/tarballs/lynx2.8.9rel.1.tar.bz2
+wget https://www.linuxfromscratch.org/patches/blfs/12.1/lynx-2.8.9rel.1-security_fix-1.patch
+wget https://ftp.gnu.org/gnu/nettle/nettle-3.9.1.tar.gz
+wget https://www.gnupg.org/ftp/gcrypt/gnutls/v3.8/gnutls-3.8.3.tar.xz
+wget https://ftp.gnu.org/gnu/libunistring/libunistring-1.1.tar.xz
+tar -xvf nettle-3.9.1.tar.gz
+
+cd nettle-3.9.1
+
+./configure --prefix=/usr --disable-static &&
+make
+
+make install &&
+chmod   -v   755 /usr/lib/lib{hogweed,nettle}.so &&
+install -v -m755 -d /usr/share/doc/nettle-3.9.1 &&
+install -v -m644 nettle.{html,pdf} /usr/share/doc/nettle-3.9.1
+
+cd ..
+
+rm -rf nettle-3.9.1
+
+tar -xvf libunistring-1.1.tar.xz
+
+cd libunistring-1.1
+
+./configure --prefix=/usr    \
+            --disable-static \
+            --with-included-unistring \
+            --docdir=/usr/share/doc/libunistring-1.1 &&
+make
+
+make install
+
+cd ..
+
+rm -rf libunistring-1.1
+
+tar -xvf gnutls-3.8.3.tar.xz
+
+cd gnutls-3.8.3
+
+./configure --prefix=/usr \
+            --docdir=/usr/share/doc/gnutls-3.8.3 \
+            --with-default-trust-store-pkcs11="pkcs11:" &&
+make
+
+
+make install
+
+cd ..
+
+rm -rf gnutls-3.8.3
+
+tar -xvf lynx2.8.9rel.1.tar.bz2
+
+cd lynx2.8.9rel.1
+
+patch -p1 -i ../lynx-2.8.9rel.1-security_fix-1.patch
+
+./configure --prefix=/usr           \
+            --sysconfdir=/etc/lynx  \
+            --with-zlib             \
+            --with-bzlib            \
+            --with-ssl              \
+            --with-screen=ncursesw  \
+            --enable-locale-charset \
+            --datadir=/usr/share/doc/lynx-2.8.9rel.1 &&
+make
+
+make install-full &&
+chgrp -v -R root /usr/share/doc/lynx-2.8.9rel.1/lynx_doc
+
+cd ..
+
+rm -rf lynx2.8.9rel.1

@@ -1,0 +1,206 @@
+#!/bin/bash
+
+# Set the error handling flags
+set -euo pipefail
+
+
+# Trap errors and call cleanup function
+trap 'echo "An error occurred. Exiting..."; exit 1;' ERR
+
+su - lfs << "EOF"
+
+source ~/.bashrc
+set -euo pipefail
+
+
+# Trap errors and call cleanup function
+trap 'echo "An error occurred. Exiting..."; exit 1;' ERR
+cd $LFS/sources
+
+echo "#-------------------------------------------------------------------------------#"
+echo "#                              Binutils-2.42 - Pass 1                           #"
+echo "#-------------------------------------------------------------------------------#"
+
+echo "Extracting Binutils"
+tar -xvJf binutils-2.42.tar.xz || exit 1  # Exit if extraction fails
+
+# Create build directory
+mkdir -v $LFS/sources/binutils-2.42/build
+cd $LFS/sources/binutils-2.42/build
+
+echo "Configuring and building Binutils"
+../configure --prefix=$LFS/tools \
+             --with-sysroot=$LFS \
+             --target=$LFS_TGT \
+             --disable-nls \
+             --enable-gprofng=no \
+             --disable-werror \
+             --enable-default-hash-style=gnu && make -j$(nproc) && make install || exit 1  # -j$(nproc) uses all available cores
+
+# Clean up
+cd $LFS/sources
+rm -rf binutils-2.42
+
+echo "#-------------------------------------------------------------------------------#"
+echo "#                                    Gcc-13.2.0                                 #"
+echo "#-------------------------------------------------------------------------------#"
+
+echo "Extracting GCC"
+tar -xvJf gcc-13.2.0.tar.xz || exit 1  # Exit if extraction fails
+
+# Navigate to the GCC folder
+cd $LFS/sources/gcc-13.2.0
+
+# Extract and rename the required libraries
+tar -xf ../mpfr-4.2.1.tar.xz || exit 1  # Exit if extraction fails
+mv -v mpfr-4.2.1 mpfr
+tar -xf ../gmp-6.3.0.tar.xz || exit 1  # Exit if extraction fails
+mv -v gmp-6.3.0 gmp
+tar -xf ../mpc-1.3.1.tar.gz || exit 1  # Exit if extraction fails
+mv -v mpc-1.3.1 mpc
+
+# Apply a patch for x86_64 architecture
+case $(uname -m) in
+  x86_64)
+    sed -e '/m64=/s/lib64/lib/' -i.orig gcc/config/i386/t-linux64 || exit 1  # Exit if patching fails
+ ;;
+esac
+
+# Create a build directory
+mkdir -v $LFS/sources/gcc-13.2.0/build
+cd $LFS/sources/gcc-13.2.0/build
+
+echo "Configuring and building GCC"
+# Configure, build, and install GCC with specific options
+../configure                  \
+    --target=$LFS_TGT         \
+    --prefix=$LFS/tools       \
+    --with-glibc-version=2.39 \
+    --with-sysroot=$LFS       \
+    --with-newlib             \
+    --without-headers         \
+    --enable-default-pie      \
+    --enable-default-ssp      \
+    --disable-nls             \
+    --disable-shared          \
+    --disable-multilib        \
+    --disable-threads         \
+    --disable-libatomic       \
+    --disable-libgomp         \
+    --disable-libquadmath     \
+    --disable-libssp          \
+    --disable-libvtv          \
+    --disable-libstdcxx       \
+    --enable-languages=c,c++ && make -j$(nproc) && make install || exit 1  # -j$(nproc) uses all available cores
+
+# Update the limits.h file
+cd ..
+cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
+  `dirname $($LFS_TGT-gcc -print-libgcc-file-name)`/include/limits.h || exit 1  # Exit if file operation fails
+
+# Clean up by removing the GCC source directory
+cd $LFS/sources
+rm -rf gcc-13.2.0
+
+echo "#-------------------------------------------------------------------------------#"
+echo "#                              Linux-6.7.4 API Headers                          #"
+echo "#-------------------------------------------------------------------------------#"
+
+# Extract the source code for Linux API Headers
+echo "Extracting Linux API Headers"
+tar -xvJf linux-6.7.4.tar.xz || exit 1  # Exit if extraction fails
+
+# Navigate to the Linux API Headers folder
+cd $LFS/sources/linux-6.7.4
+
+make mrproper || exit 1  # Exit if make mrproper fails
+
+make headers || exit 1  # Exit if make headers fails
+find usr/include -type f ! -name '*.h' -delete || exit 1  # Exit if file deletion fails
+cp -rv usr/include $LFS/usr || exit 1  # Exit if file copy fails
+
+# Clean up by removing the Linux API Headers folder source directory
+cd $LFS/sources
+rm -rf linux-6.7.4
+
+echo "#-------------------------------------------------------------------------------#"
+echo "#                                    Glibc-2.39                                 #"
+echo "#-------------------------------------------------------------------------------#"
+
+# Extract the source code for Glibc
+echo "Extracting Glibc"
+tar -xvJf glibc-2.39.tar.xz || exit 1  # Exit if extraction fails
+
+# Navigate to the Glibc folder
+cd $LFS/sources/glibc-2.39
+
+# Create symbolic links based on the system architecture
+case $(uname -m) in
+    i?86)   ln -sfv ld-linux.so.2 $LFS/lib/ld-lsb.so.3 || exit 1  # Exit if symlink creation fails
+    ;;
+    x86_64) ln -sfv ../lib/ld-linux-x86-64.so.2 $LFS/lib64 || exit 1  # Exit if symlink creation fails
+            ln -sfv ../lib/ld-linux-x86-64.so.2 $LFS/lib64/ld-lsb-x86-64.so.3 || exit 1  # Exit if symlink creation fails
+    ;;
+esac
+
+# Apply a patch to Glibc
+patch -Np1 -i ../glibc-2.39-fhs-1.patch || exit 1  # Exit if patching fails
+
+# Create a build directory
+mkdir -v $LFS/sources/glibc-2.39/build
+cd $LFS/sources/glibc-2.39/build
+
+# Set the rootsbindir variable to /usr/sbin
+echo "rootsbindir=/usr/sbin" > configparms
+
+# Configure and build Glibc
+../configure                             \
+      --prefix=/usr                      \
+      --host=$LFS_TGT                    \
+      --build=$(../scripts/config.guess) \
+      --enable-kernel=4.19               \
+      --with-headers=$LFS/usr/include    \
+      --disable-nscd                     \
+      libc_cv_slibdir=/usr/lib && make -j$(nproc) && make DESTDIR=$LFS install || exit 1  # -j$(nproc) uses all available cores
+
+# Modify the ldd script to remove /usr from RTLDLIST
+sed '/RTLDLIST=/s@/usr@@g' -i $LFS/usr/bin/ldd || exit 1  # Exit if sed operation fails
+
+# Clean up by removing the Glibc source directory
+cd $LFS/sources
+rm -rf glibc-2.39
+
+echo "#-------------------------------------------------------------------------------#"
+echo "#                            Libstdc++ from GCC-13.2.0                          #"
+echo "#-------------------------------------------------------------------------------#"
+
+# Extract the source code for GCC
+echo "Extracting GCC"
+tar -xvJf gcc-13.2.0.tar.xz || exit 1  # Exit if extraction fails
+
+# Navigate to the GCC folder
+cd $LFS/sources/gcc-13.2.0
+
+# Create a build directory
+mkdir -v $LFS/sources/gcc-13.2.0/build
+cd $LFS/sources/gcc-13.2.0/build
+
+# Configure and build Libstdc++
+echo "Configuring and building Libstdc++"
+time ../libstdc++-v3/configure           \
+    --host=$LFS_TGT                 \
+    --build=$(../config.guess)      \
+    --prefix=/usr                   \
+    --disable-multilib              \
+    --disable-nls                   \
+    --disable-libstdcxx-pch         \
+    --with-gxx-include-dir=/tools/$LFS_TGT/include/c++/13.2.0 && make -j$(nproc) && make DESTDIR=$LFS install || exit 1  # -j$(nproc) uses all available cores
+
+# Remove unnecessary files
+rm -v $LFS/usr/lib/lib{stdc++{,exp,fs},supc++}.la || exit 1  # Exit if file removal fails
+
+# Clean up by removing the GCC source directory
+cd $LFS/sources
+rm -rf gcc-13.2.0
+
+EOF

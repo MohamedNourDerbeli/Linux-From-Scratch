@@ -1,0 +1,354 @@
+#!/bin/bash
+
+# Define the LFS mount point
+LFS="/mnt/lfs"
+
+# Copy the configuration file
+# cp -iv Part3:Building_the_LFS_System/.config $LFS/sources/config-6.7.4
+
+# Enter chroot environment
+chroot "$LFS" /usr/bin/env -i \
+  HOME=/root \
+  TERM="$TERM" \
+  PS1='(lfs chroot) \u:\w\$ ' \
+  PATH=/usr/bin:/usr/sbin \
+  MAKEFLAGS="-j$(nproc)" \
+  TESTSUITEFLAGS="-j$(nproc)" \
+  /bin/bash --login << "EOF"
+  set -euo pipefail
+
+  # Trap errors and call  function
+  trap 'echo "An error occurred. Exiting..."; exit 1;' ERR
+
+  # Source the info.txt file to load variables
+  source /etc/info.txt
+
+
+# Automatically detect the primary network interface
+INTERFACE=$(ip -o link show | awk -F': ' '$2 != "lo" {print $2}' | head -n1)
+
+# Create a network configuration file for the detected interface
+cat > /etc/systemd/network/10-$INTERFACE.network << ENP
+[Match]
+Name=eno1
+
+[Network]
+DHCP=yes
+ENP
+systemctl enable systemd-networkd
+systemctl enable systemd-resolved
+
+# Set the hostname
+echo "$USERNAME" > /etc/hostname
+
+# Configure /etc/hosts
+cat > /etc/hosts << HOST_EOF
+# Begin /etc/hosts
+
+# 127.0.0.1 localhost.localdomain localhost
+127.0.1.1 ${USERNAME}.localdomain $USERNAME localhost
+192.168.1.227 ${USERNAME}.localdomain $USERNAME
+# ::1       localhost ip6-localhost ip6-loopback
+# ff02::1   ip6-allnodes
+# ff02::2   ip6-allrouters
+
+# End /etc/hosts
+HOST_EOF
+
+# Create the /etc/adjtime file with the specified content
+cat > /etc/adjtime << ADJ_EOF
+0.0 0 0.0
+0
+LOCAL
+ADJ_EOF
+
+# Configure keyboard and locale settings
+cat > /etc/vconsole.conf << "VC_EOF"
+KEYMAP=us
+FONT=Lat2-Terminus16
+VC_EOF
+
+cat > /etc/locale.conf << "L_EOF"
+LANG=en_GB.ISO-8859-1
+L_EOF
+
+cat > /etc/profile << "P_EOF"
+# Begin /etc/profile
+
+for i in $(locale); do
+  unset ${i%=*}
+done
+
+if [[ "$TERM" = linux ]]; then
+  export LANG=C.UTF-8
+else
+  source /etc/locale.conf
+
+  for i in $(locale); do
+    key=${i%=*}
+    if [[ -v $key ]]; then
+      export $key
+    fi
+  done
+fi
+
+# End /etc/profile
+P_EOF
+
+# Configure inputrc
+cat > /etc/inputrc << "IN_EOF"
+# Begin /etc/inputrc
+
+set horizontal-scroll-mode Off
+set meta-flag On
+set input-meta On
+set convert-meta Off
+set output-meta On
+set bell-style none
+
+"\eOd": backward-word
+"\eOc": forward-word
+"\e[1~": beginning-of-line
+"\e[4~": end-of-line
+"\e[5~": beginning-of-history
+"\e[6~": end-of-history
+"\e[3~": delete-char
+"\e[2~": quoted-insert
+
+"\eOH": beginning-of-line
+"\eOF": end-of-line
+
+"\e[H": beginning-of-line
+"\e[F": end-of-line
+
+# End /etc/inputrc
+IN_EOF
+
+# Configure shells
+cat > /etc/shells << "SH_EOF"
+# Begin /etc/shells
+
+/bin/sh
+/bin/bash
+
+# End /etc/shells
+SH_EOF
+
+# Configure systemd service
+mkdir -pv /etc/systemd/system/getty@tty1.service.d
+cat > /etc/systemd/system/getty@tty1.service.d/noclear.conf << "NOC_EOF"
+[Service]
+TTYVTDisallocate=no
+NOC_EOF
+
+mkdir -pv /etc/systemd/system/foobar.service.d
+
+cat > /etc/systemd/system/foobar.service.d/foobar.conf << FO_EOF
+[Service]
+Restart=always
+RestartSec=30
+FO_EOF
+
+cat > ~/.bash_profile << "PROFILE_EOF"
+exec env -i HOME=$HOME TERM=$TERM PS1='\u:\w\$ ' /bin/bash
+PROFILE_EOF
+
+cat > ~/.bashrc << "RC_EOF"
+# Begin ~/.bashrc
+
+# Don't hash commands for this shell session
+set +h
+
+# Set a default umask for new files
+umask 022
+
+# Set the LFS variable to the mount point
+LFS=/mnt/lfs
+
+# Set locale to POSIX
+LC_ALL=POSIX
+
+# Set the target triplet for cross-compiling
+LFS_TGT=$(uname -m)-lfs-linux-gnu
+
+# Set up the PATH
+PATH=/usr/bin
+if [ ! -L /bin ]; then PATH=/bin:$PATH; fi
+PATH=$LFS/tools/bin:$PATH
+
+# Set the config site
+CONFIG_SITE=$LFS/usr/share/config.site
+
+# Export the variables
+export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
+
+# Set the number of parallel jobs for make
+export MAKEFLAGS=-j$(nproc)
+
+# Custom prompt
+export PS1='[\[\033[01;32m\]\u@\h\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\]]\$ '
+
+# Aliases
+alias ll='ls -l'
+alias grep='grep --color=auto'
+alias ..='cd ..'
+alias c='clear'
+alias h='history'
+alias p='ps aux'
+alias serve='python -m http.server'
+
+# Navigation shortcuts
+alias lfs='cd /mnt/lfs'
+alias downloads='cd ~/Downloads'
+
+# Custom functions
+extract() {
+    if [ -f $1 ]; then
+        case $1 in
+            *.tar.bz2)   tar xvjf $1 ;;
+            *.tar.gz)    tar xvzf $1 ;;
+            *.tar.xz)    tar xvJf $1 ;;
+            *.bz2)       bunzip2 $1 ;;
+            *.rar)       unrar x $1 ;;
+            *.gz)        gunzip $1 ;;
+            *.tar)       tar xvf $1 ;;
+            *.tbz2)      tar xvjf $1 ;;
+            *.tgz)       tar xvzf $1 ;;
+            *.zip)       unzip $1 ;;
+            *.Z)         uncompress $1 ;;
+            *.7z)        7z x $1 ;;
+            *)           echo "'$1' cannot be extracted via extract()" ;;
+        esac
+    else
+        echo "'$1' is not a valid file"
+    fi
+}
+
+# History settings
+export HISTSIZE=10000
+export HISTCONTROL=ignoreboth
+export HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S "
+
+# Set preferred editor
+export EDITOR=vim
+
+# Security-related aliases
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+
+# Logging and monitoring
+export PROMPT_COMMAND='history -a; logger -p user.info "$(whoami) [$$]: $(history 1 | sed "s/^[ ]*[0-9]\+[ ]*//" )"'
+
+# Custom scripts
+export PATH=$HOME/bin:$PATH
+alias myscript='~/bin/myscript.sh'
+
+# End ~/.bashrc
+RC_EOF
+
+
+# Create the fstab file using UUIDs
+cat > /etc/fstab << FS_EOF
+# Begin /etc/fstab
+
+# file system  mount-point  type     options             dump  fsck
+#                                                              order
+UUID=${BOOT_UUID}     /boot      ext4    noauto,defaults      1    2
+UUID=${EFI_UUID}      /boot/efi  vfat    noauto,codepage=437,iocharset=iso8859-1 0    1
+UUID=${ROOT_UUID}     /          ext4    defaults            1    1
+UUID=${SWAP_UUID}     swap       swap    pri=1               0    0
+
+# End /etc/fstab
+FS_EOF
+
+# Build and install the Linux kernel
+cd /sources
+tar -xvf linux-6.7.4.tar.xz
+cd linux-6.7.4
+make mrproper
+mv ../config-6.7.4 .
+mv config-6.7.4 .config
+make
+make modules_install
+cp -iv arch/x86/boot/bzImage /boot/vmlinuz-6.7.4-lfs-12.1-systemd
+cp -iv System.map /boot/System.map-6.7.4
+cp -iv .config /boot/config-6.7.4
+cp -r Documentation /usr/share/doc/linux-6.7.4
+chown -R 0:0 /sources/linux-6.7.4
+
+# Configure USB modules
+install -v -m755 -d /etc/modprobe.d
+cat > /etc/modprobe.d/usb.conf << "USB_EOF"
+# Begin /etc/modprobe.d/usb.conf
+
+install ohci_hcd /sbin/modprobe ehci_hcd ; /sbin/modprobe -i ohci_hcd ; true
+install uhci_hcd /sbin/modprobe ehci_hcd ; /sbin/modprobe -i uhci_hcd ; true
+
+# End /etc/modprobe.d/usb.conf
+USB_EOF
+
+# Mount EFI partition and install GRUB
+mount --mkdir -v -t vfat ${DISK_NAME}1 /boot/efi -o codepage=437,iocharset=iso8859-1
+grub-install --target=x86_64-efi --removable
+mountpoint /sys/firmware/efi/efivars || mount -v -t efivarfs efivarfs /sys/firmware/efi/efivars
+grub-install --bootloader-id=LFS --recheck
+
+# Create GRUB configuration
+cat > /boot/grub/grub.cfg << GR_EOF
+# Begin /grub/grub.cfg
+set default=0
+set timeout=5
+
+insmod part_gpt
+insmod ext2
+search --set=root --fs-uuid ${BOOT_UUID}
+
+insmod all_video
+if loadfont /grub/fonts/unicode.pf2; then
+  terminal_output gfxterm
+fi
+
+menuentry "GNU/Linux, Linux 6.7.4-lfs-12.1" {
+  linux   /vmlinuz-6.7.4-lfs-12.1-systemd root=PARTUUID=${ROOT_PARTUUID} ro rootfstype=ext4 rootdelay=10
+}
+
+menuentry "Firmware Setup" {
+  fwsetup
+}
+GR_EOF
+
+# Create the sysctl configuration file
+cat > /etc/sysctl.d/99-sysctl.conf << "SYSCTL_CONF"
+# This setting controls the console log level.
+kernel.printk = 3 3 3 3
+# This setting controls the kernel's tendency to swap.
+vm.swappiness = 10
+# This setting enables IP forwarding.
+net.ipv4.ip_forward = 1
+SYSCTL_CONF
+
+
+# Set LFS version information
+echo "12.1-systemd" > /etc/lfs-release
+
+cat > /etc/lsb-release << "LSB_EOF"
+DISTRIB_ID="Linux From Scratch"
+DISTRIB_RELEASE="12.1-systemd"
+DISTRIB_CODENAME="NOUR MOHAMED"
+DISTRIB_DESCRIPTION="Linux From Scratch"
+LSB_EOF
+
+cat > /etc/os-release << "OS_EOF"
+NAME="Linux From Scratch"
+VERSION="12.1-systemd"
+ID=lfs
+PRETTY_NAME="Linux From Scratch 12.1-systemd"
+VERSION_CODENAME="NOUR MOHAMED"
+HOME_URL="https://www.linuxfromscratch.org/lfs/"
+OS_EOF
+
+EOF
+
+# Unmount filesystems and cleanup
+# cleanup

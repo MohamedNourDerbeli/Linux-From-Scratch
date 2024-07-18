@@ -1,0 +1,581 @@
+#!/bin/bash
+
+set -e  # Exit immediately if a command exits with a non-zero status
+
+# Trap function to handle errors
+error_handler() {
+    local exit_status=$?
+    echo "Error occurred in script at line $BASH_LINENO. Exiting..." >&2
+    exit $exit_status
+}
+
+# Register the error_handler function with ERR trap
+trap 'error_handler' ERR
+su - lfs << "EOF"
+set -euo pipefail
+
+
+# Trap errors and call cleanup function
+trap 'echo "An error occurred. Exiting..."; exit 1;' ERR
+source ~/.bashrc
+
+cd $LFS/sources
+echo "#-------------------------------------------------------------------------------#"
+echo "#                                 M4-1.4.19                                     #"
+echo "#-------------------------------------------------------------------------------#"
+
+# Extract the source code for M4
+echo "Extracting M4"
+tar -xvJf m4-1.4.19.tar.xz
+
+# Navigate to the M4 folder
+cd $LFS/sources/m4-1.4.19
+
+# Configure and build M4
+# This is the main build process for M4
+echo "Configuring and building M4"
+time ./configure --prefix=/usr   \
+            --host=$LFS_TGT \
+            --build=$(build-aux/config.guess) && make && make DESTDIR=$LFS install
+
+# Navigate back to the sources directory
+cd $LFS/sources
+
+# Remove the M4 source directory
+# This is done to clean up after the build process
+rm -rf m4-1.4.19
+
+echo "#-------------------------------------------------------------------------------#"
+echo "#                              Ncurses-6.4-20230520                             #"
+echo "#-------------------------------------------------------------------------------#"
+
+
+echo "Extracting Ncurses"
+tar -xvJf ncurses-6.4-20230520.tar.xz
+
+# Change to the extracted Ncurses directory
+cd $LFS/sources/ncurses-6.4-20230520
+
+# Remove the dependency on mawk by replacing it with an empty string in the configure file
+sed -i s/mawk// configure
+
+# Create a build directory and navigate into it
+mkdir build
+pushd build
+  ../configure
+  make -C include
+  make -C progs tic
+popd
+
+echo "Configuring and building Ncurses"
+time ./configure --prefix=/usr                \
+            --host=$LFS_TGT              \
+            --build=$(./config.guess)    \
+            --mandir=/usr/share/man      \
+            --with-manpage-format=normal \
+            --with-shared                \
+            --without-normal             \
+            --with-cxx-shared            \
+            --without-debug              \
+            --without-ada                \
+            --disable-stripping          \
+            --enable-widec && make
+
+# Install Ncurses to the LFS directory
+make DESTDIR=$LFS TIC_PATH=$(pwd)/build/progs/tic install
+
+# Create a symbolic link for libncursesw.so
+ln -sv libncursesw.so $LFS/usr/lib/libncurses.so
+
+# Modify the curses.h file to enable XOPEN
+sed -e 's/^#if.*XOPEN.*$/#if 1/' \
+    -i $LFS/usr/include/curses.h
+
+# Change to the LFS/sources directory
+cd $LFS/sources
+
+# Remove the extracted Ncurses directory
+rm -rf ncurses-6.4-20230520
+
+echo "#-------------------------------------------------------------------------------#"
+echo "#                                  Bash-5.2.21                                  #"
+echo "#-------------------------------------------------------------------------------#"
+
+# Extract Bash
+echo "Extracting Bash"
+tar -xzvf bash-5.2.21.tar.gz
+
+# Change to the extracted Bash directory
+cd $LFS/sources/bash-5.2.21
+
+# Configure and build Bash with specified parameters
+echo "Configuring and building Bash"
+time ./configure --prefix=/usr                      \
+            --build=$(sh support/config.guess) \
+            --host=$LFS_TGT                    \
+            --without-bash-malloc && make && make DESTDIR=$LFS install
+
+# Create a symbolic link for sh pointing to bash
+ln -sv bash $LFS/bin/sh
+
+# Change back to the LFS/sources directory
+cd $LFS/sources
+
+# Remove the extracted Bash directory
+rm -rf bash-5.2.21
+
+echo "#-------------------------------------------------------------------------------#"
+echo "#                                Coreutils-9.4                                  #"
+echo "#-------------------------------------------------------------------------------#"
+
+echo "Extracting Coreutils"
+tar -xvJf coreutils-9.4.tar.xz
+
+# Change to the extracted Coreutils directory
+cd $LFS/sources/coreutils-9.4
+
+# Configure and build Coreutils with specified parameters
+echo "Configuring and building Coreutils"
+time ./configure --prefix=/usr                     \
+            --host=$LFS_TGT                   \
+            --build=$(build-aux/config.guess) \
+            --enable-install-program=hostname \
+            --enable-no-install-program=kill,uptime && make && make DESTDIR=$LFS install
+
+# Move the chroot binary to the /usr/sbin directory
+mv -v $LFS/usr/bin/chroot              $LFS/usr/sbin
+
+# Create the /usr/share/man/man8 directory
+mkdir -pv $LFS/usr/share/man/man8
+
+# Move the chroot.1 man page to the /usr/share/man/man8 directory
+mv -v $LFS/usr/share/man/man1/chroot.1 $LFS/usr/share/man/man8/chroot.8
+
+# Update the man page section number from 1 to 8
+sed -i 's/"1"/"8"/'                    $LFS/usr/share/man/man8/chroot.8
+
+# Change back to the LFS/sources directory
+cd $LFS/sources
+
+# Remove the extracted Coreutils directory
+rm -rf coreutils-9.4
+
+echo "#-------------------------------------------------------------------------------#"
+echo "#                                 Diffutils-3.10                                #"
+echo "#-------------------------------------------------------------------------------#"
+
+# Extract Diffutils from the tar.xz file
+echo "Extracting Diffutils"
+tar -xvJf diffutils-3.10.tar.xz
+
+# Change to the extracted Diffutils directory
+cd $LFS/sources/diffutils-3.10
+
+# Configure and build Diffutils with specified parameters
+echo "Configuring and building Diffutils"
+time ./configure --prefix=/usr   \
+            --host=$LFS_TGT \
+            --build=$(./build-aux/config.guess) && make && make DESTDIR=$LFS install
+
+# Change back to the LFS/sources directory
+cd $LFS/sources
+
+# Remove the extracted Diffutils directory to save space
+rm -rf diffutils-3.10
+
+echo "#-------------------------------------------------------------------------------#"
+echo "#                                   File-5.45                                   #"
+echo "#-------------------------------------------------------------------------------#"
+
+# Extract the file-5.45.tar.gz archive
+echo "Extracting File"
+tar -xzvf file-5.45.tar.gz
+
+# Change into the extracted file-5.45 directory
+cd $LFS/sources/file-5.45
+
+# Print a message indicating the configuration and build process
+echo "Configuring and building File"
+
+# Create a build directory
+mkdir build
+
+# Change into the build directory and configure the build process
+pushd build
+  # Configure the build process with specific options
+ ../configure --disable-bzlib      \
+               --disable-libseccomp \
+               --disable-xzlib      \
+               --disable-zlib
+  # Start the build process
+  make
+popd
+
+# Configure the build process with specific options for the final installation
+./configure --prefix=/usr --host=$LFS_TGT --build=$(./config.guess)
+
+# Build the file command
+make FILE_COMPILE=$(pwd)/build/src/file
+
+# Install the file command to the specified destination
+make DESTDIR=$LFS install
+
+# Remove the libmagic.la file
+rm -v $LFS/usr/lib/libmagic.la
+
+# Change back into the sources directory
+cd $LFS/sources
+
+# Remove the extracted file-5.45 directory
+rm -rf file-5.45
+
+echo "#-------------------------------------------------------------------------------#"
+echo "#                                 Findutils-4.9.0                               #"
+echo "#-------------------------------------------------------------------------------#"
+
+# Extract Findutils from the tar.xz file
+echo "Extracting Findutils"
+tar -xvJf findutils-4.9.0.tar.xz
+
+# Change to the extracted Findutils directory
+cd $LFS/sources/findutils-4.9.0
+
+# Configure and build Findutils with specified parameters
+echo "Configuring and building Findutils"
+time ./configure --prefix=/usr                   \
+            --localstatedir=/var/lib/locate \
+            --host=$LFS_TGT                 \
+            --build=$(build-aux/config.guess) && make && make DESTDIR=$LFS install
+
+# Change back to the LFS/sources directory
+cd $LFS/sources
+
+# Remove the extracted Findutils directory to save space
+rm -rf findutils-4.9.0
+
+echo "#-------------------------------------------------------------------------------#"
+echo "#                                  Gawk-5.3.0                                   #"
+echo "#-------------------------------------------------------------------------------#"
+
+# Extract Gawk from the tar.xz file
+echo "Extracting Gawk"
+tar -xvJf gawk-5.3.0.tar.xz
+
+# Change to the extracted Gawk directory
+cd $LFS/sources/gawk-5.3.0
+
+# Remove the 'extras' target from Makefile.in
+sed -i 's/extras//' Makefile.in
+
+# Configure and build Gawk with specified parameters
+echo "Configuring and building Gawk"
+time ./configure --prefix=/usr   \
+            --host=$LFS_TGT \
+            --build=$(build-aux/config.guess) && make && make DESTDIR=$LFS install
+
+# Change back to the LFS/sources directory
+cd $LFS/sources
+
+# Remove the extracted Gawk directory to save space
+rm -rf gawk-5.3.0
+
+echo "#-------------------------------------------------------------------------------#"
+echo "#                                 Grep-3.11                                     #"
+echo "#-------------------------------------------------------------------------------#"
+
+# Extract the Grep archive file
+echo "Extracting Grep"
+tar -xvJf grep-3.11.tar.xz
+
+# Change the current directory to $LFS/sources/grep-3.11
+cd $LFS/sources/grep-3.11
+
+# Display a message indicating the configuration and building of Grep
+echo "Configuring and building Grep"
+
+# Run the configure script with specified options, build Grep, and install it to $LFS
+time ./configure --prefix=/usr   \
+            --host=$LFS_TGT \
+            --build=$(./build-aux/config.guess) && make && make DESTDIR=$LFS install
+
+# Change the current directory back to $LFS/sources
+cd $LFS/sources
+
+# Remove the grep-3.11 directory
+rm -rf grep-3.11
+
+echo "#-------------------------------------------------------------------------------#"
+echo "#                                 Gzip-1.13                                     #"
+echo "#-------------------------------------------------------------------------------#"
+
+# Extract the gzip archive
+echo "Extracting Gzip"
+tar -xvJf gzip-1.13.tar.xz
+
+# Change directory to the gzip source folder
+cd $LFS/sources/gzip-1.13
+
+# Configure and build gzip with the specified options
+echo "Configuring and building Gzip"
+time ./configure --prefix=/usr --host=$LFS_TGT \
+     && make && make DESTDIR=$LFS install
+
+# Change back to the sources folder
+cd $LFS/sources
+
+# Remove the gzip source folder
+rm -rf gzip-1.13
+
+echo "#-------------------------------------------------------------------------------#"
+echo "#                                  Make-4.4.1                                   #"
+echo "#-------------------------------------------------------------------------------#"
+
+# Extract the make-4.4.1.tar.gz archive
+echo "Extracting Make"
+tar -xzvf make-4.4.1.tar.gz
+
+# Change directory to $LFS/sources/make-4.4.1
+cd $LFS/sources/make-4.4.1
+
+# Configure and build Make with specified options
+echo "Configuring and building Make"
+time ./configure --prefix=/usr   \
+            --without-guile \
+            --host=$LFS_TGT \
+            --build=$(build-aux/config.guess) &&
+# Run make to build the Make package
+make &&
+# Install Make to $LFS with DESTDIR option
+make DESTDIR=$LFS install
+
+# Change directory back to $LFS/sources
+cd $LFS/sources
+
+# Remove the extracted make-4.4.1 directory
+rm -rf make-4.4.1
+
+echo "#-------------------------------------------------------------------------------#"
+echo "#                                    Patch-2.7.6                                #"
+echo "#-------------------------------------------------------------------------------#"
+
+# Echo a message to the user indicating that the patch is being extracted
+echo "Extracting Patch"
+
+# Extract the patch-2.7.6.tar.xz file
+tar -xvJf patch-2.7.6.tar.xz
+
+# Change to the extracted patch-2.7.6 directory
+cd $LFS/sources/patch-2.7.6
+
+# Echo a message to the user indicating that the patch is being configured and built
+echo "Configuring and building Patch"
+
+# Configure and build the patch with the specified options
+time ./configure --prefix=/usr   \
+            --host=$LFS_TGT \
+            --build=$(build-aux/config.guess) && make && make DESTDIR=$LFS install
+
+# Change back to the $LFS/sources directory
+cd $LFS/sources
+
+# Remove the extracted patch-2.7.6 directory
+rm -rf patch-2.7.6
+
+echo "#-------------------------------------------------------------------------------#"
+echo "#                                     Sed-4.9                                   #"
+echo "#-------------------------------------------------------------------------------#"
+
+# Extract the Sed archive
+echo "Extracting Sed"
+tar -xvJf sed-4.9.tar.xz
+
+# Change the current directory to $LFS/sources/sed-4.9
+cd $LFS/sources/sed-4.9
+
+# Display a message indicating the start of the Sed configuration and build process
+echo "Configuring and building Sed"
+
+# Execute the configure script, specifying the installation prefix as /usr,
+# the build target as $LFS_TGT, and the build configuration using config.guess,
+# then build and install Sed into the $LFS directory
+time ./configure --prefix=/usr   \
+            --host=$LFS_TGT \
+            --build=$(./build-aux/config.guess) && make && make DESTDIR=$LFS install
+
+# Change the current directory back to $LFS/sources
+cd $LFS/sources
+
+# Remove the extracted Sed directory
+rm -rf sed-4.9
+
+echo "#-------------------------------------------------------------------------------#"
+echo "#                                 Tar-1.35                                      #"
+echo "#-------------------------------------------------------------------------------#"
+
+# Echo a message to the user indicating that tar is being extracted
+echo "Extracting Tar"
+
+# Extract the tar-1.35.tar.xz file
+tar -xvJf tar-1.35.tar.xz
+
+# Change to the extracted tar-1.35 directory
+cd $LFS/sources/tar-1.35
+
+# Echo a message to the user indicating that tar is being configured and built
+echo "Configuring and building Tar"
+
+# Configure and build tar with the specified options
+time ./configure --prefix=/usr                     \
+            --host=$LFS_TGT                   \
+            --build=$(build-aux/config.guess) && make && make DESTDIR=$LFS install
+
+# Change back to the $LFS/sources directory
+cd $LFS/sources
+
+# Remove the extracted tar-1.35 directory
+rm -rf tar-1.35
+
+echo "#-------------------------------------------------------------------------------#"
+echo "#                                 Xz-5.4.6                                      #"
+echo "#-------------------------------------------------------------------------------#"
+
+# Extract the xz-5.4.6 archive
+echo "Extracting Xz"
+tar -xvJf xz-5.4.6.tar.xz
+
+# Move into the extracted xz-5.4.6 directory
+cd $LFS/sources/xz-5.4.6
+
+# Display a message to indicate the configuration and building of Xz
+echo "Configuring and building Xz"
+
+# Run the configure script with specified options
+# --prefix=/usr sets the installation prefix
+# --host=$LFS_TGT specifies the host platform
+# --build=$(build-aux/config.guess) determines the build platform
+# --disable-static disables the building of static libraries
+# --docdir=/usr/share/doc/xz-5.4.6 sets the documentation directory
+# time command is used to display the execution time
+./configure --prefix=/usr                     \
+            --host=$LFS_TGT                   \
+            --build=$(build-aux/config.guess) \
+            --disable-static                  \
+            --docdir=/usr/share/doc/xz-5.4.6
+
+# Build and install Xz
+make
+
+make DESTDIR=$LFS install
+
+# Remove the liblzma.la file
+rm -v $LFS/usr/lib/liblzma.la
+
+# Move back to the sources directory
+cd $LFS/sources
+
+# Remove the xz-5.4.6 directory
+rm -rf xz-5.4.6
+
+echo "#-------------------------------------------------------------------------------#"
+echo "#                              Binutils-2.42 - Pass 2                           #"
+echo "#-------------------------------------------------------------------------------#"
+
+# Extract Binutils source code
+echo "Extracting Binutils"
+tar -xvJf binutils-2.42.tar.xz
+
+# Change to the extracted Binutils source code directory
+cd $LFS/sources/binutils-2.42
+
+# Modify the ltmain.sh file to remove an unwanted directory addition
+sed '6009s/$add_dir//' -i ltmain.sh
+
+# Create a build directory and change to it
+mkdir -v build
+cd build
+
+# Configure and build Binutils with specified options
+echo "Configuring and building Binutils"
+time ../configure                   \
+    --prefix=/usr              \
+    --build=$(../config.guess) \
+    --host=$LFS_TGT            \
+    --disable-nls              \
+    --enable-shared            \
+    --enable-gprofng=no        \
+    --disable-werror           \
+    --enable-64-bit-bfd        \
+    --enable-default-hash-style=gnu 
+
+make && make DESTDIR=$LFS install
+
+# Remove unnecessary libraries
+rm -v $LFS/usr/lib/lib{bfd,ctf,ctf-nobfd,opcodes,sframe}.{a,la}
+
+# Change back to the sources directory and remove the extracted Binutils source code directory
+cd $LFS/sources
+rm -rf binutils-2.42
+
+echo "#-------------------------------------------------------------------------------#"
+echo "#                                GCC-13.2.0 - Pass 2                            #"
+echo "#-------------------------------------------------------------------------------#"
+
+# Extract the source code for GCC
+echo "Extracting GCC"
+tar -xvJf gcc-13.2.0.tar.xz
+
+# Navigate to the GCC folder
+cd $LFS/sources/gcc-13.2.0
+
+# Extract and rename the required libraries
+tar -xf../mpfr-4.2.1.tar.xz
+mv -v mpfr-4.2.1 mpfr
+tar -xf../gmp-6.3.0.tar.xz
+mv -v gmp-6.3.0 gmp
+tar -xf../mpc-1.3.1.tar.gz
+mv -v mpc-1.3.1 mpc
+
+# Apply a patch for x86_64 architecture
+case $(uname -m) in
+  x86_64)
+    sed -e '/m64=/s/lib64/lib/' \
+        -i.orig gcc/config/i386/t-linux64
+  ;;
+esac
+
+# Modify Makefile.in for libgcc and libstdc++-v3 to use gthr-posix.h
+sed '/thread_header =/s/@.*@/gthr-posix.h/' \
+    -i libgcc/Makefile.in libstdc++-v3/include/Makefile.in
+
+# Create a build directory
+mkdir -v build
+cd       build
+
+echo "Configuring and building GCC"
+# Configure, build, and install GCC with specific options
+time ../configure                                       \
+    --build=$(../config.guess)                     \
+    --host=$LFS_TGT                                \
+    --target=$LFS_TGT                              \
+    LDFLAGS_FOR_TARGET=-L$PWD/$LFS_TGT/libgcc      \
+    --prefix=/usr                                  \
+    --with-build-sysroot=$LFS                      \
+    --enable-default-pie                           \
+    --enable-default-ssp                           \
+    --disable-nls                                  \
+    --disable-multilib                             \
+    --disable-libatomic                            \
+    --disable-libgomp                              \
+    --disable-libquadmath                          \
+    --disable-libsanitizer                         \
+    --disable-libssp                               \
+    --disable-libvtv                               \
+    --enable-languages=c,c++ && make && make DESTDIR=$LFS install
+
+# Create a symbolic link for cc to gcc
+ln -sv gcc $LFS/usr/bin/cc
+
+# Clean up by removing the GCC source directory
+cd $LFS/sources
+rm -rf gcc-13.2.0
+EOF
