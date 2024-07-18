@@ -1,4 +1,6 @@
 sources
 lfs-temp-tools-12.1.tar.xz
 steps*
+*.log
 .gitignore
+info.txt
