@@ -4,3 +4,4 @@ steps*
 *.log
 .gitignore
 info.txt
+__pycache__/

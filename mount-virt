@@ -26,10 +26,11 @@ else
   SUDO=""
 fi
 
+if [ x$LFS == x ]; then
+  echo "LFS not set"
+  exit 1
+fi
 
-
-mount /dev/sda4 /mnt/lfs
-mount /dev/sda2 /mnt/lfs/boot
 mountbind dev
 mounttype dev/pts devpts devpts -o gid=5,mode=620
 mounttype proc    proc   proc
@@ -40,3 +41,16 @@ if [ -h $LFS/dev/shm ]; then
 else
   mounttype dev/shm tmpfs tmpfs -o nosuid,nodev
 fi 
+
+#mountbind usr/src
+#mountbind boot
+#mountbind home
+
+chroot "$LFS" /usr/bin/env -i \
+HOME=/root \
+TERM="$TERM" \
+PS1='(lfs chroot) \u:\w\$ ' \
+PATH=/usr/bin:/usr/sbin \
+MAKEFLAGS="-j$(nproc)" \
+TESTSUITEFLAGS="-j$(nproc)" \
+    /bin/bash --login

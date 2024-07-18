@@ -7,6 +7,7 @@ echo "Script stdout "
 echo "Script stdout "
 echo "Script stdout "
 echo "Script stdout "
+
 >&2 echo "Total complete: 10%"
 
 sleep 0.5

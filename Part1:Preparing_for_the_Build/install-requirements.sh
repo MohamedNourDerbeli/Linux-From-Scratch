@@ -24,10 +24,10 @@ scripts=(
     "version-check.sh"
     "check_and_install.sh"
     #"GUI.sh"
-    "disk_setup.sh"
-    "auto_mount.sh"
-    "setup_sources.sh"
-    "lfs_user_environ.sh"
+    #"disk_setup.sh"
+    #"auto_mount.sh"
+    #"setup_sources.sh"
+    #"lfs_user_environ.sh"
 )
 
 pushd "Part1:Preparing_for_the_Build" 2>&1
@@ -44,7 +44,7 @@ for script in "${scripts[@]}"; do
     fi
     
     # Pause between scripts
-    pause
+    # pause
 done
 
 popd 2>&1
