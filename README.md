@@ -67,5 +67,4 @@ This will launch the GUI to take user inputs and trigger the sequence of steps n
 - The process is designed to be automated, but it assumes you are familiar with Linux system administration and basic shell scripting.
 - Make sure to review the system’s requirements and package lists before starting the build, as missing software could interrupt the process.
 - This project provides automation for many steps, but manual intervention may be required in specific cases, such as configuring certain packages or handling errors.
-```
 
